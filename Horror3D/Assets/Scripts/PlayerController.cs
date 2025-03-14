@@ -14,6 +14,10 @@ public class PlayerController : MonoBehaviour
     public float lookXLimit = 75f;
     public float cameraRotationSmooth = 5f;
 
+    public float crouchSpeed;
+    public float crouchYScale;
+    private float startYScale;
+
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
     float rotationY = 0;
@@ -35,6 +39,8 @@ public class PlayerController : MonoBehaviour
         // Lock And Hide Cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        startYScale = transform.localScale.y;
     }
 
     void Update()
@@ -68,22 +74,28 @@ public class PlayerController : MonoBehaviour
 
         // Zooming In Action:
         if (Input.GetButtonDown("Fire2"))
-        {
             isZoomed = true;
-        }
 
         if (Input.GetButtonUp("Fire2"))
-        {
             isZoomed = false;
-        }
 
         if (isZoomed)
-        {
             playerCam.GetComponent<Camera>().fieldOfView = Mathf.Lerp(playerCam.fieldOfView, ZoomFOV, Time.deltaTime * cameraZoomSmooth);
-        }
         else
-        {
             playerCam.GetComponent<Camera>().fieldOfView = Mathf.Lerp(playerCam.fieldOfView, initialFOV, Time.deltaTime * cameraZoomSmooth);
+
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
         }
+
+        if (Input.GetKeyUp(KeyCode.LeftControl))
+        {
+            if (!Physics.Raycast(transform.position, Vector3.up, startYScale - crouchYScale + 0.1f))
+            {
+                transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            }
+        }
+
     }
 }
