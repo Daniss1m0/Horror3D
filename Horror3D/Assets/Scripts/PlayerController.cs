@@ -6,6 +6,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Camera playerCam;
+    public AudioSource leftFoot;
+    public AudioSource rightFoot;
 
     public float walkSpeed = 3f;
     public float runSpeed = 5f;
@@ -32,6 +34,11 @@ public class PlayerController : MonoBehaviour
 
     CharacterController characterController;
 
+    private bool isLeftFoot = true;
+    private float stepMagnitude = 2f;
+    float distanceWalked = 0f;
+    private Vector3 lastSoundPos;
+
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -41,10 +48,13 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
 
         startYScale = transform.localScale.y;
+
+        lastSoundPos = transform.position;
     }
 
     void Update()
     {
+        
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
@@ -56,6 +66,15 @@ public class PlayerController : MonoBehaviour
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
         characterController.Move(moveDirection * Time.deltaTime);
+
+        // foot steps
+        distanceWalked += (transform.position - lastSoundPos).magnitude;
+        lastSoundPos = transform.position;
+        if (distanceWalked>=stepMagnitude)
+        {
+            PlayFootstep();
+            distanceWalked = 0;
+        }
 
         // Camera Movement In Action:
         if (canMove)
@@ -96,6 +115,20 @@ public class PlayerController : MonoBehaviour
                 transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
             }
         }
+    }
 
+    void PlayFootstep()
+    {
+        if (isLeftFoot)
+        {
+            if (!leftFoot.isPlaying)
+                leftFoot.Play();
+        }
+        else
+        {
+            if (!rightFoot.isPlaying)
+                rightFoot.Play();
+        }
+        isLeftFoot = !isLeftFoot;
     }
 }
