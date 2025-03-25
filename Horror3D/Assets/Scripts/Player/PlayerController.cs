@@ -54,18 +54,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
 
-        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
-        float movementDirectionY = moveDirection.y;
-        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+        float directionX = canMove ? Input.GetAxis("Vertical") : 0;
+        float directionY = canMove ? Input.GetAxis("Horizontal") : 0;
+        moveDirection = (forward * directionX) + (right * directionY);
 
-        characterController.Move(moveDirection * Time.deltaTime);
+        characterController.Move(moveDirection.normalized * Time.deltaTime * (isRunning ? runSpeed : walkSpeed));
 
         // foot steps
         distanceWalked += (transform.position - lastSoundPos).magnitude;
