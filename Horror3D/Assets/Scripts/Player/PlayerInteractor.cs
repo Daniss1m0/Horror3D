@@ -5,17 +5,20 @@ interface IInteractable
     public void Interact();
 }
 
+interface IPickable
+{
+    public void PickUp(Inventory inventory);
+}
+
 public class PlayerInteractor : MonoBehaviour
 {
     public Transform InteractorSource;
     public float InteractionRange;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public Inventory inventory;
     void Start()
     {
         
     }
-
-    // Update is called once per frame
     void Update()
     {
         Interaction();
@@ -32,6 +35,11 @@ public class PlayerInteractor : MonoBehaviour
                 if(hitInfo.collider.gameObject.TryGetComponent(out IInteractable InteractableObject))
                 {
                     InteractableObject.Interact();
+                }
+                if (hitInfo.collider.gameObject.TryGetComponent(out IPickable PickableObject))
+                {
+                    PickableObject.PickUp(inventory); ;
+                    Destroy(hitInfo.collider.gameObject);
                 }
             }
         }
