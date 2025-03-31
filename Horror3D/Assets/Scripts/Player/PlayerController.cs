@@ -39,17 +39,22 @@ public class PlayerController : MonoBehaviour
     float distanceWalked = 0f;
     private Vector3 lastSoundPos;
 
+    public string footstepFolder = "Footsteps_Metal_Walk";
+    private AudioClip[] footstepClips;
+
     void Start()
     {
         characterController = GetComponent<CharacterController>();
 
-        // Lock And Hide Cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
         startYScale = transform.localScale.y;
-
         lastSoundPos = transform.position;
+
+        footstepClips = Resources.LoadAll<AudioClip>(footstepFolder);
+        if (footstepClips.Length == 0)
+            Debug.LogWarning("Nie znaleziono dźwięków kroków w folderze: " + footstepFolder);
     }
 
     void Update()
@@ -65,16 +70,14 @@ public class PlayerController : MonoBehaviour
 
         characterController.Move(moveDirection.normalized * Time.deltaTime * (isRunning ? runSpeed : walkSpeed));
 
-        // foot steps
         distanceWalked += (transform.position - lastSoundPos).magnitude;
         lastSoundPos = transform.position;
-        if (distanceWalked>=stepMagnitude)
+        if (distanceWalked >= stepMagnitude)
         {
             PlayFootstep();
             distanceWalked = 0;
         }
 
-        // Camera Movement In Action:
         if (canMove)
         {
             rotationX -= Input.GetAxis("Mouse Y") * lookSpeed;
@@ -89,7 +92,6 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotationY, Time.deltaTime * cameraRotationSmooth);
         }
 
-        // Zooming In Action:
         if (Input.GetButtonDown("Fire2"))
             isZoomed = true;
 
@@ -117,15 +119,20 @@ public class PlayerController : MonoBehaviour
 
     void PlayFootstep()
     {
+        if (footstepClips == null || footstepClips.Length == 0)
+            return;
+
+        AudioClip randomClip = footstepClips[Random.Range(0, footstepClips.Length)];
+
         if (isLeftFoot)
         {
             if (!leftFoot.isPlaying)
-                leftFoot.Play();
+                leftFoot.PlayOneShot(randomClip);
         }
         else
         {
             if (!rightFoot.isPlaying)
-                rightFoot.Play();
+                rightFoot.PlayOneShot(randomClip);
         }
         isLeftFoot = !isLeftFoot;
     }
