@@ -9,6 +9,16 @@ public class Inventory : ScriptableObject
     {
         InventorySpace.Add(new InventorySlot(item));
     }
+
+    public bool CheckForItem(ItemBaseClass Item)
+    {
+        foreach (InventorySlot slot in InventorySpace)
+        {
+            if (slot.item.id == Item.id)
+                return true;
+        }
+        return false;
+    }
 }
 
 [System.Serializable]
