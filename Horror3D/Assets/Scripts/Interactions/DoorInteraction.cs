@@ -5,20 +5,31 @@ public class DoorInteraction : MonoBehaviour, IInteractable
 {
     public Animator door;
     public GameObject openText;
+    public Inventory inventory;
+    public ItemBaseClass itemToCheckFor;
+    private bool keyUsed = false;
 
     public AudioSource doorSound;
 
     public void Interact()
     {
+        CheckKey();
         DoorAction();
     }
 
     void DoorOpens()
     {
-        Debug.Log("It Opens");
-        door.SetBool("Open", true);
-        door.SetBool("Closed", false);
-        doorSound.Play();
+        if (keyUsed)
+        {
+            Debug.Log("It Opens");
+            door.SetBool("Open", true);
+            door.SetBool("Closed", false);
+            doorSound.Play();
+        }
+        else
+        {
+            Debug.Log("Find Key");
+        }
     }
 
     void DoorCloses()
@@ -37,6 +48,14 @@ public class DoorInteraction : MonoBehaviour, IInteractable
         else
         {
             DoorOpens();
+        }
+    }
+
+    void CheckKey()
+    {
+        if (inventory.CheckForItem(itemToCheckFor))
+        {
+            keyUsed = true;
         }
     }
 }
