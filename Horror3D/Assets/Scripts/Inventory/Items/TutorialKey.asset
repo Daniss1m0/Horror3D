@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf3967ad59bdcc74486fffcdb0b92981, type: 3}
   m_Name: TutorialKey
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
   id: 1
   type: 1
   description: Key for future tutorial
+  prefab: {fileID: 881631058191785111, guid: 7b0079acc14cec747a2c9f978fb45035, type: 3}
