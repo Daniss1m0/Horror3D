@@ -7,5 +7,4 @@ public class KeyItem : ItemBaseClass
     {
         this.type = ItemType.QuestItem;
     }
-
 }

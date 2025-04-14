@@ -13,15 +13,15 @@ interface IPickable
 public class PlayerInteractor : MonoBehaviour
 {
     public Transform InteractorSource;
-    public float InteractionRange;
+    public Transform dropPoint;
+    public Transform LeftHand;
+    public Transform RightHand;
     public Inventory inventory;
-    void Start()
-    {
-        
-    }
+    public float InteractionRange;
     void Update()
     {
         Interaction();
+        Drop();
     }
 
     void Interaction()
@@ -32,15 +32,80 @@ public class PlayerInteractor : MonoBehaviour
             Debug.DrawRay(InteractionRay.origin, InteractionRay.direction * InteractionRange, Color.green, 10);
             if (Physics.Raycast(InteractionRay, out RaycastHit hitInfo, InteractionRange))
             {
-                if(hitInfo.collider.gameObject.TryGetComponent(out IInteractable InteractableObject))
+                GameObject target = hitInfo.collider.attachedRigidbody
+                    ? hitInfo.collider.attachedRigidbody.gameObject
+                    : hitInfo.collider.gameObject;
+
+                Debug.Log("Interacted with: " + target.name);
+
+                if (target.TryGetComponent(out IInteractable interactable))
                 {
-                    InteractableObject.Interact();
+                    interactable.Interact();
                 }
-                if (hitInfo.collider.gameObject.TryGetComponent(out IPickable PickableObject))
+
+                if (target.TryGetComponent(out IPickable pickable))
                 {
-                    PickableObject.PickUp(inventory); ;
-                    Destroy(hitInfo.collider.gameObject);
+                    pickable.PickUp(inventory);
+                    Destroy(target);
                 }
+            }
+            AttachToHands();
+        }
+    }
+
+    void Drop()
+    {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            if (inventory.GetItemToDrop())
+            {
+                GameObject DropedItem = Instantiate(inventory.GetItemToDrop(), dropPoint);
+                DropedItem.transform.localPosition = Vector3.zero;
+                DropedItem.transform.localRotation = Quaternion.identity;
+                inventory.RemoveLastItem();
+            }
+            else
+                Debug.Log("No Items to drop");
+            AttachToHands();
+        }
+    }
+
+    void AttachToHands()
+    {
+        foreach (Transform child in LeftHand)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (Transform child in RightHand)
+        {
+            Destroy(child.gameObject);
+        }
+
+        if (inventory.GetInventorySize() >= 1)
+        {
+            GameObject leftItemPrefab = inventory.GetInventorySlot(0).item.prefab;
+            if (leftItemPrefab != null)
+            {
+                GameObject leftItemInstance = Instantiate(leftItemPrefab, LeftHand);
+                Rigidbody rb = leftItemInstance.GetComponent<Rigidbody>();
+                rb.isKinematic = true;
+                rb.detectCollisions = false;
+                leftItemInstance.transform.localPosition = Vector3.zero;
+                leftItemInstance.transform.localRotation = Quaternion.identity;
+            }
+        }
+
+        if (inventory.GetInventorySize() >= 2)
+        {
+            GameObject rightItemPrefab = inventory.GetInventorySlot(1).item.prefab;
+            if (rightItemPrefab != null)
+            {
+                GameObject rightItemInstance = Instantiate(rightItemPrefab, RightHand);
+                Rigidbody rb = rightItemInstance.GetComponent<Rigidbody>();
+                rb.isKinematic = true;
+                rb.detectCollisions = false;
+                rightItemInstance.transform.localPosition = Vector3.zero;
+                rightItemInstance.transform.localRotation = Quaternion.identity;
             }
         }
     }
