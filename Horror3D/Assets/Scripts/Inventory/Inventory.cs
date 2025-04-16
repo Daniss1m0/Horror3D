@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class Inventory : ScriptableObject
     private int InventoryMaxSlots = 2;
     public void AddItem(ItemBaseClass item)
     {
-        if (InventorySpace.Count < InventoryMaxSlots)
+        if (HasFreeSpace())
             InventorySpace.Add(new InventorySlot(item));
         else
             Debug.Log("Not enought space in inventory");
@@ -39,25 +40,44 @@ public class Inventory : ScriptableObject
     }
     public GameObject GetItemToDrop()
     {
-        return InventorySpace[InventorySpace.Count - 1].item.prefab == null ?
-            null :
-            InventorySpace[InventorySpace.Count - 1].item.prefab;
+        try
+        {
+            return InventorySpace[InventorySpace.Count - 1].item.prefab;
+        }
+        catch (ArgumentOutOfRangeException e)
+        {
+            Debug.Log("Exception catched");
+        }
+        return null;
     }
     public InventorySlot GetInventorySlot(int id)
     {
-        return InventorySpace[id];
-    }
-    private void OnValidate()
-    {
-        if (InventorySpace.Count > InventoryMaxSlots)
-        {
-            Debug.Log("Can't add more items");
-            RemoveLastItem();
-        }
+        if (InventorySpace[id] != null)
+            return InventorySpace[id];
+        return null;
     }
     public int GetInventorySize()
     {
         return InventorySpace.Count;
+    }
+    public bool HasFreeSpace()
+    {
+        Debug.Log(InventorySpace.Count);
+        if (InventorySpace.Count >= InventoryMaxSlots)
+            return false;
+        return true;
+    }
+    private void OnValidate()
+    {
+        if (HasFreeSpace())
+        {
+            Debug.Log("has free space");
+        }
+        else
+        {
+            Debug.Log("No free");
+            RemoveLastItem();
+        }
     }
 }
 
