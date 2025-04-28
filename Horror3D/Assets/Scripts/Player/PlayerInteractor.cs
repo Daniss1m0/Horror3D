@@ -18,6 +18,11 @@ public class PlayerInteractor : MonoBehaviour
     public Transform RightHand;
     public Inventory inventory;
     public float InteractionRange;
+
+    private void Awake()
+    {
+        AttachToHands();
+    }
     void Update()
     {
         Interaction();
@@ -45,8 +50,13 @@ public class PlayerInteractor : MonoBehaviour
 
                 if (target.TryGetComponent(out IPickable pickable))
                 {
-                    pickable.PickUp(inventory);
-                    Destroy(target);
+                    if (inventory.HasFreeSpace())
+                    {
+                        pickable.PickUp(inventory);
+                        Destroy(target);
+                    }
+                    else
+                        Debug.Log("No free space in inventory");
                 }
             }
             AttachToHands();
@@ -59,9 +69,7 @@ public class PlayerInteractor : MonoBehaviour
         {
             if (inventory.GetItemToDrop())
             {
-                GameObject DropedItem = Instantiate(inventory.GetItemToDrop(), dropPoint);
-                DropedItem.transform.localPosition = Vector3.zero;
-                DropedItem.transform.localRotation = Quaternion.identity;
+                GameObject DropedItem = Instantiate(inventory.GetItemToDrop(), dropPoint.position, Quaternion.identity);
                 inventory.RemoveLastItem();
             }
             else

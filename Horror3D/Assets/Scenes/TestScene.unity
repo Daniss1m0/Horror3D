@@ -238,7 +238,6 @@ GameObject:
   - component: {fileID: 59270070}
   - component: {fileID: 59270073}
   - component: {fileID: 59270072}
-  - component: {fileID: 59270071}
   m_Layer: 0
   m_Name: Spot Light
   m_TagString: Untagged
@@ -261,22 +260,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1738834081}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!114 &59270071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 59270069}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4806f52f1485e244a1ba7cc4b1e97b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  torch: {fileID: 0}
-  torchSpotLight: {fileID: 0}
-  flashlightOn: {fileID: 0}
-  flashlightOff: {fileID: 0}
 --- !u!114 &59270072
 MonoBehaviour:
   m_ObjectHideFlags: 0
