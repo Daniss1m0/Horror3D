@@ -85,8 +85,23 @@ public class Inventory : ScriptableObject
 public class InventorySlot
 {
     public ItemBaseClass item;
+
     public InventorySlot(ItemBaseClass item)
     {
         this.item = item;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+            return false;
+
+        InventorySlot other = (InventorySlot)obj;
+        return item != null && other.item != null && item.id == other.item.id;
+    }
+
+    public override int GetHashCode()
+    {
+        return item != null ? item.id.GetHashCode() : 0;
     }
 }
