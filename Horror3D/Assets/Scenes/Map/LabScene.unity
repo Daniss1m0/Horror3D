@@ -34627,97 +34627,9 @@ MonoBehaviour:
   m_Mesh: {fileID: 1916678235}
   m_VersionIndex: 27949
   m_IsSelectable: 1
-  m_SelectedFaces: ef030000e7030000e3030000df030000d7030000d3030000cf030000c7030000c3030000bf030000b7030000
-  m_SelectedEdges:
-  - a: 4028
-    b: 4029
-  - a: 4030
-    b: 4028
-  - a: 4029
-    b: 4031
-  - a: 4031
-    b: 4030
-  - a: 3996
-    b: 3997
-  - a: 3998
-    b: 3996
-  - a: 3997
-    b: 3999
-  - a: 3999
-    b: 3998
-  - a: 3980
-    b: 3981
-  - a: 3982
-    b: 3980
-  - a: 3981
-    b: 3983
-  - a: 3983
-    b: 3982
-  - a: 3964
-    b: 3965
-  - a: 3966
-    b: 3964
-  - a: 3965
-    b: 3967
-  - a: 3967
-    b: 3966
-  - a: 3932
-    b: 3933
-  - a: 3934
-    b: 3932
-  - a: 3933
-    b: 3935
-  - a: 3935
-    b: 3934
-  - a: 3916
-    b: 3917
-  - a: 3918
-    b: 3916
-  - a: 3917
-    b: 3919
-  - a: 3919
-    b: 3918
-  - a: 3900
-    b: 3901
-  - a: 3902
-    b: 3900
-  - a: 3901
-    b: 3903
-  - a: 3903
-    b: 3902
-  - a: 3868
-    b: 3869
-  - a: 3870
-    b: 3868
-  - a: 3869
-    b: 3871
-  - a: 3871
-    b: 3870
-  - a: 3852
-    b: 3853
-  - a: 3854
-    b: 3852
-  - a: 3853
-    b: 3855
-  - a: 3855
-    b: 3854
-  - a: 3836
-    b: 3837
-  - a: 3838
-    b: 3836
-  - a: 3837
-    b: 3839
-  - a: 3839
-    b: 3838
-  - a: 3804
-    b: 3805
-  - a: 3806
-    b: 3804
-  - a: 3805
-    b: 3807
-  - a: 3807
-    b: 3806
-  m_SelectedVertices: bc0f0000bd0f0000be0f0000bf0f00009c0f00009d0f00009e0f00009f0f00008c0f00008d0f00008e0f00008f0f00007c0f00007d0f00007e0f00007f0f00005c0f00005d0f00005e0f00005f0f00004c0f00004d0f00004e0f00004f0f00003c0f00003d0f00003e0f00003f0f00001c0f00001d0f00001e0f00001f0f00000c0f00000d0f00000e0f00000f0f0000fc0e0000fd0e0000fe0e0000ff0e0000dc0e0000dd0e0000de0e0000df0e0000
+  m_SelectedFaces: 
+  m_SelectedEdges: []
+  m_SelectedVertices: 
 --- !u!23 &320611083
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -34793,7 +34705,7 @@ Transform:
   m_GameObject: {fileID: 320611079}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 82, y: 0, z: 26}
+  m_LocalPosition: {x: 19.5, y: 0, z: 26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
