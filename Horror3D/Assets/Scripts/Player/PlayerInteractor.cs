@@ -10,6 +10,11 @@ interface IPickable
     public void PickUp(Inventory inventory);
 }
 
+interface IUsable
+{
+    public void Use();
+}
+
 public class PlayerInteractor : MonoBehaviour
 {
     public Transform InteractorSource;
@@ -117,4 +122,5 @@ public class PlayerInteractor : MonoBehaviour
             }
         }
     }
+
 }
