@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
     public Camera playerCam;
@@ -20,31 +20,32 @@ public class PlayerController : MonoBehaviour
     public float crouchYScale;
     private float startYScale;
 
-    Vector3 moveDirection = Vector3.zero;
-    float rotationX = 0;
-    float rotationY = 0;
+    private Vector3 moveDirection = Vector3.zero;
+    private float rotationX = 0;
+    private float rotationY = 0;
 
     public int ZoomFOV = 35;
     public int initialFOV;
     public float cameraZoomSmooth = 1;
 
     private bool isZoomed = false;
-
     private bool canMove = true;
 
-    CharacterController characterController;
+    private Rigidbody rb;
 
     private bool isLeftFoot = true;
     private float stepMagnitude = 2f;
-    float distanceWalked = 0f;
+    private float distanceWalked = 0f;
     private Vector3 lastSoundPos;
 
     public string footstepFolder = "Footsteps_Metal_Walk";
     private AudioClip[] footstepClips;
 
-    void Start()
+    private void Start()
     {
-        characterController = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;       // Prevent physics-based rotation
+        rb.useGravity = true;            // Ensure gravity is handled by Unity
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -57,27 +58,21 @@ public class PlayerController : MonoBehaviour
             Debug.LogWarning("Nie znaleziono dźwięków kroków w folderze: " + footstepFolder);
     }
 
-    void Update()
+    private void Update()
     {
-        Vector3 forward = transform.TransformDirection(Vector3.forward);
-        Vector3 right = transform.TransformDirection(Vector3.right);
+        // Handle movement input
+        Vector3 forward = transform.forward;
+        Vector3 right = transform.right;
 
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
 
-        float directionX = canMove ? Input.GetAxis("Vertical") : 0;
-        float directionY = canMove ? Input.GetAxis("Horizontal") : 0;
-        moveDirection = (forward * directionX) + (right * directionY);
+        float inputX = canMove ? Input.GetAxis("Horizontal") : 0;
+        float inputZ = canMove ? Input.GetAxis("Vertical") : 0;
 
-        characterController.Move(moveDirection.normalized * Time.deltaTime * (isRunning ? runSpeed : walkSpeed));
+        Vector3 desiredMove = (forward * inputZ + right * inputX).normalized;
+        moveDirection = desiredMove * (isRunning ? runSpeed : walkSpeed);
 
-        distanceWalked += (transform.position - lastSoundPos).magnitude;
-        lastSoundPos = transform.position;
-        if (distanceWalked >= stepMagnitude)
-        {
-            PlayFootstep();
-            distanceWalked = 0;
-        }
-
+        // Handle looking (camera rotation)
         if (canMove)
         {
             rotationX -= Input.GetAxis("Mouse Y") * lookSpeed;
@@ -92,17 +87,18 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotationY, Time.deltaTime * cameraRotationSmooth);
         }
 
+        // Handle zoom
         if (Input.GetButtonDown("Fire2"))
             isZoomed = true;
-
         if (Input.GetButtonUp("Fire2"))
             isZoomed = false;
 
         if (isZoomed)
-            playerCam.GetComponent<Camera>().fieldOfView = Mathf.Lerp(playerCam.fieldOfView, ZoomFOV, Time.deltaTime * cameraZoomSmooth);
+            playerCam.fieldOfView = Mathf.Lerp(playerCam.fieldOfView, ZoomFOV, Time.deltaTime * cameraZoomSmooth);
         else
-            playerCam.GetComponent<Camera>().fieldOfView = Mathf.Lerp(playerCam.fieldOfView, initialFOV, Time.deltaTime * cameraZoomSmooth);
+            playerCam.fieldOfView = Mathf.Lerp(playerCam.fieldOfView, initialFOV, Time.deltaTime * cameraZoomSmooth);
 
+        // Handle crouch
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
@@ -115,9 +111,25 @@ public class PlayerController : MonoBehaviour
                 transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
             }
         }
+
+        // Handle footsteps
+        distanceWalked += (transform.position - lastSoundPos).magnitude;
+        if (distanceWalked >= stepMagnitude)
+        {
+            PlayFootstep();
+            distanceWalked = 0;
+        }
+        lastSoundPos = transform.position;
     }
 
-    void PlayFootstep()
+    private void FixedUpdate()
+    {
+        // Only set horizontal velocity, keep vertical (gravity) velocity unchanged
+        Vector3 velocity = new Vector3(moveDirection.x, rb.linearVelocity.y, moveDirection.z);
+        rb.linearVelocity = velocity;
+    }
+
+    private void PlayFootstep()
     {
         if (footstepClips == null || footstepClips.Length == 0)
             return;

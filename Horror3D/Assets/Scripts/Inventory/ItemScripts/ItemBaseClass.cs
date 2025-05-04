@@ -5,6 +5,7 @@ public enum ItemType
 {
     Resource,
     QuestItem,
+    Usable,
     Default
 }
 public abstract class ItemBaseClass : ScriptableObject

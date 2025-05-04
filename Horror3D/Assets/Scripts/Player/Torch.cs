@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class Torch : MonoBehaviour
 {
 
     public GameObject torch;
@@ -14,7 +14,6 @@ public class NewMonoBehaviourScript : MonoBehaviour
     {
         torchSpotLight.enabled = false;
         torch.SetActive(false);
-
     }
 
     void Update()

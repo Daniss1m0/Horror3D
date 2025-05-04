@@ -46,7 +46,7 @@ public class Inventory : ScriptableObject
         }
         catch (ArgumentOutOfRangeException e)
         {
-            Debug.Log("Exception catched");
+            Debug.Log($"Exception catched: {e.Message}");
         }
         return null;
     }
@@ -62,8 +62,8 @@ public class Inventory : ScriptableObject
     }
     public bool HasFreeSpace()
     {
-        Debug.Log(InventorySpace.Count);
-        if (InventorySpace.Count >= InventoryMaxSlots)
+        //Debug.Log(InventorySpace.Count);
+        if (InventorySpace.Count > InventoryMaxSlots)
             return false;
         return true;
     }

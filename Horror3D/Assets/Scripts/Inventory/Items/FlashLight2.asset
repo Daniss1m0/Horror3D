@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83934cd71b614f642bfd9494140fddfc, type: 3}
-  m_Name: Map1Inventory
+  m_Script: {fileID: 11500000, guid: ccae2d07616cb0e4a8e9dc74569ea5c3, type: 3}
+  m_Name: FlashLight2
   m_EditorClassIdentifier: 
-  InventorySpace:
-  - item: {fileID: 11400000, guid: 549a74600f10b4147b45cdd4b837ff63, type: 2}
+  id: 4
+  type: 2
+  description: 
+  prefab: {fileID: 8241989148504872743, guid: 785a808e49745794d875a77631485791, type: 3}
