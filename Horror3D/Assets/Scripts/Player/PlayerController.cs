@@ -41,16 +41,33 @@ public class PlayerController : MonoBehaviour
     public string footstepFolder = "Footsteps_Metal_Walk";
     private AudioClip[] footstepClips;
 
+    private CapsuleCollider capsule;
+    private float originalHeight;
+    private Vector3 originalCenter;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;       // Prevent physics-based rotation
-        rb.useGravity = true;            // Ensure gravity is handled by Unity
+        capsule = GetComponent<CapsuleCollider>();
+
+        if (capsule == null)
+        {
+            Debug.LogError("CapsuleCollider required on player for crouch functionality.");
+            enabled = false;
+            return;
+        }
+
+        rb.freezeRotation = true;
+        rb.useGravity = true;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
         startYScale = transform.localScale.y;
+
+        originalHeight = capsule.height;
+        originalCenter = capsule.center;
+
         lastSoundPos = transform.position;
 
         footstepClips = Resources.LoadAll<AudioClip>(footstepFolder);
@@ -98,18 +115,28 @@ public class PlayerController : MonoBehaviour
         else
             playerCam.fieldOfView = Mathf.Lerp(playerCam.fieldOfView, initialFOV, Time.deltaTime * cameraZoomSmooth);
 
-        // Handle crouch
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            capsule.height = crouchYScale;
+            capsule.center = new Vector3(capsule.center.x, crouchYScale / 2f, capsule.center.z);
         }
 
         if (Input.GetKeyUp(KeyCode.LeftControl))
         {
-            if (!Physics.Raycast(transform.position, Vector3.up, startYScale - crouchYScale + 0.1f))
+            if (Input.GetKeyUp(KeyCode.LeftControl))
             {
-                transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+                float headClearance = originalHeight - crouchYScale + 0.1f;
+
+                int playerLayer = LayerMask.NameToLayer("Player");
+                int mask = ~(1 << playerLayer); 
+
+                if (!Physics.Raycast(transform.position, Vector3.up, headClearance, mask, QueryTriggerInteraction.Ignore))
+                {
+                    capsule.height = originalHeight;
+                    capsule.center = originalCenter;
+                }
             }
+
         }
 
         // Handle footsteps
