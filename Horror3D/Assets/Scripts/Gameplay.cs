@@ -4,14 +4,19 @@ using System.Collections;
 public class GameplayManager : MonoBehaviour
 {
     public NPCMovement npc;
+    public Transform[] waypoints;
+    public float waitTimeAtPoint = 2f;
 
-    private Vector3 pointA = new Vector3(-46.2f, 1.2f, -61.6f);
-    private Vector3 pointB = new Vector3(-31.15f, 1.2f, -61.6f);
-
-    private bool goingToA = false;
+    private int currentWaypointIndex = 0;
 
     void Start()
     {
+        if (waypoints.Length == 0)
+        {
+            Debug.LogWarning("Brak waypointów przypisanych do GameplayManager.");
+            return;
+        }
+
         StartCoroutine(MoveLoop());
     }
 
@@ -19,14 +24,14 @@ public class GameplayManager : MonoBehaviour
     {
         while (true)
         {
-            Vector3 target = goingToA ? pointA : pointB;
+            Vector3 target = waypoints[currentWaypointIndex].position;
             npc.Move(target);
 
             yield return new WaitUntil(() => npc.HasReachedTarget());
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(waitTimeAtPoint);
 
-            goingToA = !goingToA;
+            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
         }
     }
 }
