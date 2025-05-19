@@ -1,24 +1,19 @@
 using UnityEngine;
 
-public class RequierItemQuest : MonoBehaviour, IInteractable
+public class RequierItemQuest : Quest
 {
     [SerializeField] Inventory inventoryToCheck;
     [SerializeField] ItemBaseClass itemToSearchFor;
-
-    private bool isQuestActive { get; set; } = true;
-    private bool isQuestComplete { get; set; } = false;
-
-    public void Interact()
+    public override void Interact()
     {
-        if (isQuestActive && inventoryToCheck.CheckForItem(itemToSearchFor))
+        if (IsActive && inventoryToCheck.CheckForItem(itemToSearchFor))
         {
-            isQuestActive = false;
-            isQuestComplete = true;
+            CompleteQuest();
             inventoryToCheck.RemoveItem(itemToSearchFor);
         }
         else
         {
-            Debug.Log($"Interacted, but not complete! {inventoryToCheck.CheckForItem(itemToSearchFor)}");
+            Debug.Log($"Interacted, but not complete! Quest is active:{IsActive}");
         }
     }
 }

@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
     public float cameraZoomSmooth = 1;
 
     private bool isZoomed = false;
-    private bool canMove = true;
+    public bool canMove = true;
 
     private Rigidbody rb;
 
