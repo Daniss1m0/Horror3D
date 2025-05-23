@@ -102,11 +102,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ai: {fileID: 3060042530762974475}
   destinations: []
-  aiAnim: {fileID: 0}
   walkSpeed: 2
   chaseSpeed: 5
   minIdleTime: 2
-  maxIdleTime: 9
+  maxIdleTime: 5
   idleTime: 0
   sightDistance: 10
   catchDistance: 3
