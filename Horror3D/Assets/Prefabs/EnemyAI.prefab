@@ -107,18 +107,21 @@ MonoBehaviour:
   minIdleTime: 2
   maxIdleTime: 5
   idleTime: 0
-  sightDistance: 10
+  detectionDistance: 14
   catchDistance: 3
-  chaseTime: 0
+  searchDistance: 10
   minChaseTime: 10
   maxChaseTime: 25
+  minSearchTime: 3
+  maxSearchTime: 10
   jumpscareTime: 2
   walking: 0
   chasing: 0
+  searching: 0
   player: {fileID: 0}
-  destinationAmount: 0
   rayCastOffset: {x: 0, y: 0, z: 0}
-  deathScene: New Scene
+  deathScene: LabScene
+  aiDistance: 0
 --- !u!195 &3060042530762974475
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -1,68 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HidingPlace : MonoBehaviour
 {
-    public GameObject hideText, stopHideText;
-    public GameObject normalPlayer, hidingPlayer;
-    public EnemyAI monsterScript;
-    public Transform monsterTransform;
-    bool interactable, hiding;
-    public float loseDistance;
+    public GameObject player;
+    private bool isPlayerHidden = false;
+    private Renderer playerRenderer;
+    private EnemyAI enemyAI;
 
     void Start()
     {
-        interactable = false;
-        hiding = false;
+        if (player == null)
+            player = GameObject.FindGameObjectWithTag("Player");
+
+        if (player != null)
+            playerRenderer = player.GetComponent<Renderer>();
+
+        enemyAI = FindObjectOfType<EnemyAI>();
     }
-    void OnTriggerStay(Collider other)
+
+    void OnMouseDown()
     {
-        if (other.CompareTag("MainCamera"))
+        if (player == null || playerRenderer == null || enemyAI == null)
         {
-            hideText.SetActive(true);
-            interactable = true;
+            Debug.LogWarning("HideSpot: Missing references!");
+            return;
         }
+
+        if (!isPlayerHidden)
+            HidePlayer();
+        else
+            UnhidePlayer();
     }
-    void OnTriggerExit(Collider other)
+
+    void HidePlayer()
     {
-        if (other.CompareTag("MainCamera"))
-        {
-            hideText.SetActive(false);
-            interactable = false;
-        }
+        isPlayerHidden = true;
+        playerRenderer.enabled = false;
+        // Вместо отключения коллайдера:
+        player.transform.position = transform.position + new Vector3(0, 0.5f, 0); // Переместить внутрь объекта
+        if (enemyAI.hideText) enemyAI.hideText.SetActive(false);
+        if (enemyAI.stopHideText) enemyAI.stopHideText.SetActive(true);
+        enemyAI.detectionDistance = 0;
     }
-    void Update()
+
+    void UnhidePlayer()
     {
-        if (interactable == true)
-        {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                hideText.SetActive(false);
-                hidingPlayer.SetActive(true);
-                float distance = Vector3.Distance(monsterTransform.position, normalPlayer.transform.position);
-                if (distance > loseDistance)
-                {
-                    if (monsterScript.chasing == true)
-                    {
-                        monsterScript.stopChase();
-                    }
-                }
-                stopHideText.SetActive(true);
-                hiding = true;
-                normalPlayer.SetActive(false);
-                interactable = false;
-            }
-        }
-        if (hiding == true)
-        {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                stopHideText.SetActive(false);
-                normalPlayer.SetActive(true);
-                hidingPlayer.SetActive(false);
-                hiding = false;
-            }
-        }
+        isPlayerHidden = false;
+        playerRenderer.enabled = true;
+        if (enemyAI.hideText) enemyAI.hideText.SetActive(true);
+        if (enemyAI.stopHideText) enemyAI.stopHideText.SetActive(false);
+        enemyAI.detectionDistance = 10f; // или другое значение
     }
 }
