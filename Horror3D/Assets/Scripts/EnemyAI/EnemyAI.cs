@@ -19,6 +19,8 @@ public class EnemyAI : MonoBehaviour
     public float aiDistance;
     public GameObject hideText, stopHideText;
 
+    private bool isPlayerHidden = false;
+
     void Start()
     {
         walking = true;
@@ -26,6 +28,10 @@ public class EnemyAI : MonoBehaviour
     }
     void Update()
     {
+        if (isPlayerHidden)
+            return; // Враг ничего не делает, если игрок спрятан
+
+
         Vector3 direction = (player.position - transform.position).normalized;
         RaycastHit hit;
         aiDistance = Vector3.Distance(player.position, this.transform.position);
@@ -133,4 +139,10 @@ public class EnemyAI : MonoBehaviour
         yield return new WaitForSeconds(jumpscareTime);
         SceneManager.LoadScene(deathScene);
     }
+
+    public void SetPlayerHidden(bool hidden)
+    {
+        isPlayerHidden = hidden;
+    }
+
 }

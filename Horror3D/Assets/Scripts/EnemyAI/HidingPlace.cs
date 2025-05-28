@@ -2,53 +2,73 @@ using UnityEngine;
 
 public class HidingPlace : MonoBehaviour
 {
-    public GameObject player;
-    private bool isPlayerHidden = false;
-    private Renderer playerRenderer;
-    private EnemyAI enemyAI;
+    public Transform player;
+    public GameObject hidingCameraObject;
+    public Collider hidingTrigger;
+    public GameObject hideText; // <-- UI текст "Нажмите E, чтобы спрятаться"
+
+    private Camera mainCamera;
+    private Camera hidingCamera;
+
+    private bool isPlayerNear = false;
+    private bool isHiding = false;
 
     void Start()
     {
-        if (player == null)
-            player = GameObject.FindGameObjectWithTag("Player");
+        mainCamera = Camera.main;
+        if (mainCamera == null)
+            Debug.LogError("MainCamera не найдена!");
 
-        if (player != null)
-            playerRenderer = player.GetComponent<Renderer>();
-
-        enemyAI = FindObjectOfType<EnemyAI>();
-    }
-
-    void OnMouseDown()
-    {
-        if (player == null || playerRenderer == null || enemyAI == null)
+        if (hidingCameraObject != null)
         {
-            Debug.LogWarning("HideSpot: Missing references!");
-            return;
+            hidingCamera = hidingCameraObject.GetComponent<Camera>();
+            if (hidingCamera == null)
+                Debug.LogError("На hidingCameraObject нет компонента Camera.");
+            hidingCamera.enabled = false;
         }
 
-        if (!isPlayerHidden)
-            HidePlayer();
-        else
-            UnhidePlayer();
+        if (hideText != null)
+            hideText.SetActive(false); // Сначала скрыть
     }
 
-    void HidePlayer()
+    void Update()
     {
-        isPlayerHidden = true;
-        playerRenderer.enabled = false;
-        // Вместо отключения коллайдера:
-        player.transform.position = transform.position + new Vector3(0, 0.5f, 0); // Переместить внутрь объекта
-        if (enemyAI.hideText) enemyAI.hideText.SetActive(false);
-        if (enemyAI.stopHideText) enemyAI.stopHideText.SetActive(true);
-        enemyAI.detectionDistance = 0;
+        if (hidingTrigger != null)
+        {
+            bool wasNear = isPlayerNear;
+            isPlayerNear = hidingTrigger.bounds.Contains(player.position);
+
+            // Включить/выключить текст, если статус изменился
+            if (hideText != null && isPlayerNear != wasNear)
+                hideText.SetActive(isPlayerNear);
+        }
+
+        if (isPlayerNear && Input.GetKeyDown(KeyCode.E))
+        {
+            ToggleHide();
+        }
     }
 
-    void UnhidePlayer()
+    void ToggleHide()
     {
-        isPlayerHidden = false;
-        playerRenderer.enabled = true;
-        if (enemyAI.hideText) enemyAI.hideText.SetActive(true);
-        if (enemyAI.stopHideText) enemyAI.stopHideText.SetActive(false);
-        enemyAI.detectionDistance = 10f; // или другое значение
+        isHiding = !isHiding;
+
+        var controller = player.GetComponent<PlayerController>();
+        if (controller != null)
+            controller.enabled = !isHiding;
+
+        if (mainCamera != null && hidingCamera != null)
+        {
+            mainCamera.enabled = !isHiding;
+            hidingCamera.enabled = isHiding;
+        }
+
+        EnemyAI enemy = FindObjectOfType<EnemyAI>();
+        if (enemy != null)
+            enemy.SetPlayerHidden(isHiding);
+
+        // Прятаться = убираем текст
+        if (hideText != null)
+            hideText.SetActive(!isHiding && isPlayerNear);
     }
 }
