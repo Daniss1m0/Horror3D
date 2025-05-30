@@ -20951,18 +20951,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 705340839}
     - target: {fileID: 1766912502703297348, guid: a64abb974ca7c15448a47f5e531e7f93, type: 3}
-      propertyPath: destinationAmount
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1766912502703297348, guid: a64abb974ca7c15448a47f5e531e7f93, type: 3}
-      propertyPath: detectionDistance
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1766912502703297348, guid: a64abb974ca7c15448a47f5e531e7f93, type: 3}
-      propertyPath: destinations.Array.size
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1766912502703297348, guid: a64abb974ca7c15448a47f5e531e7f93, type: 3}
       propertyPath: 'destinations.Array.data[0]'
       value: 
       objectReference: {fileID: 1883933945}
@@ -21025,10 +21013,6 @@ PrefabInstance:
     - target: {fileID: 5389058479016593096, guid: a64abb974ca7c15448a47f5e531e7f93, type: 3}
       propertyPath: m_Name
       value: EnemyAI
-      objectReference: {fileID: 0}
-    - target: {fileID: 5389058479016593096, guid: a64abb974ca7c15448a47f5e531e7f93, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -21166,8 +21150,8 @@ Transform:
   - {fileID: 528320344}
   - {fileID: 1804260286}
   - {fileID: 1192921290}
-  - {fileID: 1155626468}
   - {fileID: 1179984265}
+  - {fileID: 1155626468}
   - {fileID: 1783595659}
   m_Father: {fileID: 1897467449}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
