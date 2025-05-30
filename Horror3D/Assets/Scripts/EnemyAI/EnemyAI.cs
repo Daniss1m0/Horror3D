@@ -8,7 +8,7 @@ public class EnemyAI : MonoBehaviour
 {
     public NavMeshAgent ai;
     public List<Transform> destinations;
-    //public Animator aiAnim;
+    public Animator aiAnim;
     public float walkSpeed, chaseSpeed, minIdleTime, maxIdleTime, idleTime, detectionDistance, catchDistance, searchDistance, minChaseTime, maxChaseTime, minSearchTime, maxSearchTime, jumpscareTime;
     public bool walking, chasing, searching;
     public Transform player;
@@ -29,7 +29,7 @@ public class EnemyAI : MonoBehaviour
     void Update()
     {
         if (isPlayerHidden)
-            return; // Враг ничего не делает, если игрок спрятан
+            return;
 
 
         Vector3 direction = (player.position - transform.position).normalized;

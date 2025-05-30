@@ -5,7 +5,7 @@ public class HidingPlace : MonoBehaviour
     public Transform player;
     public GameObject hidingCameraObject;
     public Collider hidingTrigger;
-    public GameObject hideText; // <-- UI текст "Нажмите E, чтобы спрятаться"
+    public GameObject hideText;
 
     private Camera mainCamera;
     private Camera hidingCamera;
@@ -17,18 +17,18 @@ public class HidingPlace : MonoBehaviour
     {
         mainCamera = Camera.main;
         if (mainCamera == null)
-            Debug.LogError("MainCamera не найдена!");
+            Debug.LogError("MainCamera not found!");
 
         if (hidingCameraObject != null)
         {
             hidingCamera = hidingCameraObject.GetComponent<Camera>();
             if (hidingCamera == null)
-                Debug.LogError("На hidingCameraObject нет компонента Camera.");
+                Debug.LogError("MainCamera not found!");
             hidingCamera.enabled = false;
         }
 
         if (hideText != null)
-            hideText.SetActive(false); // Сначала скрыть
+            hideText.SetActive(false);
     }
 
     void Update()
@@ -38,7 +38,6 @@ public class HidingPlace : MonoBehaviour
             bool wasNear = isPlayerNear;
             isPlayerNear = hidingTrigger.bounds.Contains(player.position);
 
-            // Включить/выключить текст, если статус изменился
             if (hideText != null && isPlayerNear != wasNear)
                 hideText.SetActive(isPlayerNear);
         }
@@ -67,7 +66,6 @@ public class HidingPlace : MonoBehaviour
         if (enemy != null)
             enemy.SetPlayerHidden(isHiding);
 
-        // Прятаться = убираем текст
         if (hideText != null)
             hideText.SetActive(!isHiding && isPlayerNear);
     }
