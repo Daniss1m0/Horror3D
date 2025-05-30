@@ -24,13 +24,15 @@ public class EnemyAI : MonoBehaviour
     private bool isIdling = false;
     private bool initialIdleSkipped = false;
 
-    private Animator animator;
+    public Animator animator;
+
+    // Do porównywania zmiany stanów animacji
+    private bool prevIsWalking, prevIsChasing;
 
     void Start()
     {
         walking = true;
         currentDest = destinations[Random.Range(0, destinations.Count)];
-        animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
@@ -50,7 +52,6 @@ public class EnemyAI : MonoBehaviour
                     StartCoroutine(searchRoutine());
                     searching = true;
                     isIdling = false;
-                    SetAnimStates(false, false, true, false, false); // Searching
                 }
             }
 
@@ -65,7 +66,6 @@ public class EnemyAI : MonoBehaviour
                     chasing = true;
                     searching = false;
                     isIdling = false;
-                    SetAnimStates(false, true, false, false, false); // Chasing
                 }
             }
 
@@ -81,9 +81,9 @@ public class EnemyAI : MonoBehaviour
                     StartCoroutine(deathRoutine());
                     chasing = false;
                     isIdling = false;
-                    SetAnimStates(false, false, false, false, true); // Death
                 }
 
+                SetAnimStates(false, true);
                 return;
             }
         }
@@ -93,7 +93,6 @@ public class EnemyAI : MonoBehaviour
             dest = currentDest.position;
             ai.destination = dest;
             ai.speed = walkSpeed;
-            SetAnimStates(true, false, false, false, false); // Walking
 
             if (ai.remainingDistance <= ai.stoppingDistance && !isIdling && !ai.pathPending)
             {
@@ -111,10 +110,12 @@ public class EnemyAI : MonoBehaviour
                 {
                     StartCoroutine(stayIdle());
                     walking = false;
-                    SetAnimStates(false, false, false, true, false); // Idling
                 }
             }
         }
+
+        // Aktualizacja Animatora
+        SetAnimStates(walking, chasing);
     }
 
     public void stopChase()
@@ -123,41 +124,34 @@ public class EnemyAI : MonoBehaviour
         chasing = false;
         StopCoroutine("chaseRoutine");
         currentDest = destinations[Random.Range(0, destinations.Count)];
-        SetAnimStates(true, false, false, false, false); // Walking
     }
 
     IEnumerator stayIdle()
     {
         idleTime = Random.Range(minIdleTime, maxIdleTime);
-        SetAnimStates(false, false, false, true, false); // Idling
         yield return new WaitForSeconds(idleTime);
         walking = true;
         isIdling = false;
         currentDest = destinations[Random.Range(0, destinations.Count)];
-        SetAnimStates(true, false, false, false, false); // Walking
     }
 
     IEnumerator searchRoutine()
     {
-        SetAnimStates(false, false, true, false, false); // Searching
         yield return new WaitForSeconds(Random.Range(minSearchTime, maxSearchTime));
         searching = false;
         walking = true;
         isIdling = false;
         currentDest = destinations[Random.Range(0, destinations.Count)];
-        SetAnimStates(true, false, false, false, false); // Walking
     }
 
     IEnumerator chaseRoutine()
     {
-        SetAnimStates(false, true, false, false, false); // Chasing
         yield return new WaitForSeconds(Random.Range(minChaseTime, maxChaseTime));
         stopChase();
     }
 
     IEnumerator deathRoutine()
     {
-        SetAnimStates(false, false, false, false, true); // Dead
         yield return new WaitForSeconds(jumpscareTime);
         SceneManager.LoadScene(deathScene);
     }
@@ -172,19 +166,24 @@ public class EnemyAI : MonoBehaviour
             chasing = false;
             walking = true;
             currentDest = destinations[Random.Range(0, destinations.Count)];
-            SetAnimStates(true, false, false, false, false); // Walking
         }
     }
 
-    private void SetAnimStates(bool isWalking, bool isChasing, bool isSearching, bool isIdling, bool isDead)
+    // ✅ Animacja tylko gdy wartość się zmienia
+    private void SetAnimStates(bool isWalking, bool isChasing)
     {
         if (animator == null) return;
 
-        animator.SetBool("isWalk", isWalking);
-        Debug.Log(isWalking);
-        animator.SetBool("isRun", isChasing);
-       // animator.SetBool("isSearching", isSearching);
-       // animator.SetBool("isWalk_Run", isIdling);
-       // animator.SetBool("isDead", isDead);
+        if (isWalking != prevIsWalking)
+        {
+            animator.SetBool("isWalk", isWalking);
+            prevIsWalking = isWalking;
+        }
+
+        if (isChasing != prevIsChasing)
+        {
+            animator.SetBool("isRun", isChasing);
+            prevIsChasing = isChasing;
+        }
     }
 }
