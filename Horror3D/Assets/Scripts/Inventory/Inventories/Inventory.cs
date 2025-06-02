@@ -38,6 +38,15 @@ public class Inventory : ScriptableObject
         }
         return false;
     }
+    public int GetItemIndex(ItemBaseClass item)
+    {
+        for (int i = 0; i < InventorySpace.Count; i++)
+        {
+            if (InventorySpace[i].item != null && InventorySpace[i].item.id == item.id)
+                return i;
+        }
+        return -1; 
+    }
     public GameObject GetItemToDrop()
     {
         try

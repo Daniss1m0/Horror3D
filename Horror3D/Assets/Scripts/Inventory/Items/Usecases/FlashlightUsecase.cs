@@ -5,6 +5,8 @@ public class FlashlightUsecase : MonoBehaviour
 {
     [SerializeField] private Inventory inventoryToCheck;
     [SerializeField] private ItemBaseClass FlashLight;
+    [SerializeField] private Light left;
+    [SerializeField] private Light right;
 
     public Light spotlight;
     public float maxBattery = 100f;
@@ -26,11 +28,21 @@ public class FlashlightUsecase : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.F))
             {
                 ToggleFlashlight();
+                if (inventoryToCheck.GetItemIndex(FlashLight) == 0)
+                {
+                    left.enabled = !left.enabled;
+                }
+                else
+                {
+                    right.enabled = !left.enabled;
+                }
             }
         }
         else
         {
             DisableFlashlight();
+            left.enabled = false;
+            right.enabled = false;
         }
 
         currentBattery = Mathf.Clamp(currentBattery, 0f, maxBattery);

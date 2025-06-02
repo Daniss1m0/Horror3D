@@ -13,6 +13,7 @@ interface IPickable
 interface IUsable
 {
     public void Use();
+    public void SetInventory(Inventory inventory);
 }
 
 public class PlayerInteractor : MonoBehaviour
@@ -55,6 +56,10 @@ public class PlayerInteractor : MonoBehaviour
 
                 if (target.TryGetComponent(out IPickable pickable))
                 {
+                    if (target.TryGetComponent(out IUsable usable))
+                    {
+                        usable.SetInventory(inventory);
+                    }
                     if (inventory.HasFreeSpace())
                     {
                         pickable.PickUp(inventory);
