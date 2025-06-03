@@ -174,16 +174,21 @@ public class EnemyAI : MonoBehaviour
     {
         if (animator == null) return;
 
-        if (isWalking != prevIsWalking)
+        // Zasada: tylko jedna z animacji może być aktywna w danym momencie
+        bool setWalk = isWalking && !isChasing;
+        bool setRun = isChasing && !isWalking;
+
+        if (setWalk != prevIsWalking)
         {
-            animator.SetBool("isWalk", isWalking);
-            prevIsWalking = isWalking;
+            animator.SetBool("isWalk", setWalk);
+            prevIsWalking = setWalk;
         }
 
-        if (isChasing != prevIsChasing)
+        if (setRun != prevIsChasing)
         {
-            animator.SetBool("isRun", isChasing);
-            prevIsChasing = isChasing;
+            animator.SetBool("isRun", setRun);
+            prevIsChasing = setRun;
         }
     }
+
 }

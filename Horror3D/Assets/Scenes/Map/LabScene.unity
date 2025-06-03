@@ -13933,6 +13933,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryToCheck: {fileID: 11400000, guid: fe366502409c67941b72daac5620d15e, type: 2}
   FlashLight: {fileID: 11400000, guid: 549a74600f10b4147b45cdd4b837ff63, type: 2}
+  left: {fileID: 0}
+  right: {fileID: 0}
   spotlight: {fileID: 77727897}
   maxBattery: 100
   drainPower: 1
