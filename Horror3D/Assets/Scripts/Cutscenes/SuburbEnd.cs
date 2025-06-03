@@ -14,6 +14,17 @@ public class CutsceneManager : MonoBehaviour
     public Transform taxiStopPoint;
     public float taxiSpeed = 2f;
 
+    public Transform mother;
+    public Transform son;
+    public Transform cameraTarget;
+
+    public float cameraMoveDuration = 1f;
+
+    public MonoBehaviour otherCameraScript;
+
+    private Vector3 originalCameraPos;
+    private Quaternion originalCameraRot;
+
     [System.Serializable]
     public class DialogueLine
     {
@@ -28,20 +39,14 @@ public class CutsceneManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Start sceny");
-
         fadePanel.color = new Color(0, 0, 0, 0);
         timeSkipText.gameObject.SetActive(false);
         dialogPanel.SetActive(false);
 
-        if (taxi == null || taxiStopPoint == null)
+        if (cameraTarget != null)
         {
-            Debug.LogError("Taksówka lub punkt zatrzymania nie s¹ przypisane!");
-        }
-
-        if (lines == null || lines.Length == 0)
-        {
-            Debug.LogWarning("Brak dialogów w tablicy 'lines'");
+            originalCameraPos = cameraTarget.position;
+            originalCameraRot = cameraTarget.rotation;
         }
 
         StartCoroutine(MoveTaxiAndStartDialogue());
@@ -49,8 +54,6 @@ public class CutsceneManager : MonoBehaviour
 
     IEnumerator MoveTaxiAndStartDialogue()
     {
-        Debug.Log("Rozpoczynam ruch taksówki");
-
         while (Vector3.Distance(taxi.transform.position, taxiStopPoint.position) > 0.05f)
         {
             taxi.transform.position = Vector3.MoveTowards(
@@ -61,27 +64,91 @@ public class CutsceneManager : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("Taksówka dojecha³a");
+        yield return new WaitForSeconds(0.5f);
+
+        Vector3 directionToSon = (son.position - mother.position).normalized;
+        directionToSon.y = 0;
+
+        if (directionToSon != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(directionToSon);
+            mother.rotation = lookRotation;
+        }
+
+        if (cameraTarget != null)
+        {
+            yield return StartCoroutine(MoveCameraAuto());
+        }
 
         yield return new WaitForSeconds(0.5f);
+
+        if (otherCameraScript != null)
+        {
+            otherCameraScript.enabled = false;
+        }
 
         dialogPanel.SetActive(true);
         ShowLine();
         dialogStarted = true;
+    }
 
-        Debug.Log("Dialog rozpoczêty");
+    IEnumerator MoveCameraAuto()
+    {
+        Vector3 dirToMother = (mother.position - cameraTarget.position).normalized;
+        Vector3 endPos = mother.position - dirToMother * 1f + Vector3.up * 1.6f;
+        Quaternion endRot = Quaternion.LookRotation(mother.position + Vector3.up * 1.6f - endPos);
+
+        Vector3 startPos = cameraTarget.position;
+        Quaternion startRot = cameraTarget.rotation;
+
+        float t = 0f;
+        while (t < cameraMoveDuration)
+        {
+            t += Time.deltaTime;
+            float progress = t / cameraMoveDuration;
+
+            cameraTarget.position = Vector3.Lerp(startPos, endPos, progress);
+            cameraTarget.rotation = Quaternion.Slerp(startRot, endRot, progress);
+
+            yield return null;
+        }
+
+        cameraTarget.position = endPos;
+        cameraTarget.rotation = endRot;
+    }
+
+    IEnumerator ReturnCameraToOriginal()
+    {
+        float t = 0f;
+        Vector3 startPos = cameraTarget.position;
+        Quaternion startRot = cameraTarget.rotation;
+
+        while (t < cameraMoveDuration)
+        {
+            t += Time.deltaTime;
+            float progress = t / cameraMoveDuration;
+
+            cameraTarget.position = Vector3.Lerp(startPos, originalCameraPos, progress);
+            cameraTarget.rotation = Quaternion.Slerp(startRot, originalCameraRot, progress);
+
+            yield return null;
+        }
+
+        cameraTarget.position = originalCameraPos;
+        cameraTarget.rotation = originalCameraRot;
+
+        if (otherCameraScript != null)
+        {
+            otherCameraScript.enabled = true;
+        }
     }
 
     void Update()
     {
         if (!dialogStarted) return;
 
-        Debug.Log("Update dzia³a — nas³uchujê spacji");
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Wciœniêto SPACJÊ");
-
             index++;
             if (index < lines.Length)
             {
@@ -89,7 +156,6 @@ public class CutsceneManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Dialog zakoñczony — zaczynam zakoñczenie cutscenki");
                 StartCoroutine(EndCutscene());
             }
         }
@@ -97,13 +163,7 @@ public class CutsceneManager : MonoBehaviour
 
     void ShowLine()
     {
-        if (index >= lines.Length)
-        {
-            Debug.LogWarning("Indeks poza zakresem dialogów");
-            return;
-        }
-
-        Debug.Log($"Pokazujê liniê {index + 1}/{lines.Length}: {lines[index].speaker} mówi: \"{lines[index].line}\"");
+        if (index >= lines.Length) return;
 
         nameText.text = lines[index].speaker;
         dialogText.text = lines[index].line;
@@ -112,14 +172,15 @@ public class CutsceneManager : MonoBehaviour
     IEnumerator EndCutscene()
     {
         dialogPanel.SetActive(false);
+
         yield return StartCoroutine(FadeToBlack());
+        yield return StartCoroutine(ReturnCameraToOriginal());
+
         timeSkipText.gameObject.SetActive(true);
-        Debug.Log("Wyœwietlam '10 lat póŸniej'");
     }
 
     IEnumerator FadeToBlack()
     {
-        Debug.Log("Rozpoczynam fade do czerni");
         float duration = 2f;
         float t = 0;
         while (t < duration)
@@ -128,6 +189,5 @@ public class CutsceneManager : MonoBehaviour
             fadePanel.color = new Color(0, 0, 0, Mathf.Lerp(0, 1, t / duration));
             yield return null;
         }
-        Debug.Log("Fade zakoñczony");
     }
 }
