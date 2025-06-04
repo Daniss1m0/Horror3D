@@ -31,9 +31,19 @@ public class EnemyAI : MonoBehaviour
 
     void Start()
     {
+        if (animator == null)
+        {
+            Debug.LogError("❌ Animator не присвоен!");
+        }
+        else
+        {
+            Debug.Log("✅ Animator найден!");
+        }
+
         walking = true;
         currentDest = destinations[Random.Range(0, destinations.Count)];
     }
+
 
     void Update()
     {
@@ -174,21 +184,15 @@ public class EnemyAI : MonoBehaviour
     {
         if (animator == null) return;
 
-        // Zasada: tylko jedna z animacji może być aktywna w danym momencie
-        bool setWalk = isWalking && !isChasing;
-        bool setRun = isChasing && !isWalking;
+        bool walkState = isWalking && !isChasing;
+        bool runState = isChasing;
 
-        if (setWalk != prevIsWalking)
-        {
-            animator.SetBool("isWalk", setWalk);
-            prevIsWalking = setWalk;
-        }
+        Debug.Log($"[Anim] Set isWalk: {walkState}, isRun: {runState}");
 
-        if (setRun != prevIsChasing)
-        {
-            animator.SetBool("isRun", setRun);
-            prevIsChasing = setRun;
-        }
+        animator.SetBool("isWalk", walkState);
+        animator.SetBool("isRun", runState);
     }
+
+
 
 }
