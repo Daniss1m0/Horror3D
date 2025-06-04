@@ -618,6 +618,7 @@ MonoBehaviour:
   rayCastOffset: {x: 0, y: 0, z: 0}
   deathScene: LabScene
   aiDistance: 0
+  animator: {fileID: 8999229551998264821}
 --- !u!195 &3060042530762974475
 NavMeshAgent:
   m_ObjectHideFlags: 0

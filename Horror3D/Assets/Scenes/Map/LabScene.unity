@@ -18558,11 +18558,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!95 &1048349557 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 8999229551998264821, guid: a64abb974ca7c15448a47f5e531e7f93, type: 3}
-  m_PrefabInstance: {fileID: 1179984264}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1053317885
 GameObject:
   m_ObjectHideFlags: 0
@@ -20879,10 +20874,6 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 705340839}
-    - target: {fileID: 1766912502703297348, guid: a64abb974ca7c15448a47f5e531e7f93, type: 3}
-      propertyPath: animator
-      value: 
-      objectReference: {fileID: 1048349557}
     - target: {fileID: 1766912502703297348, guid: a64abb974ca7c15448a47f5e531e7f93, type: 3}
       propertyPath: 'destinations.Array.data[0]'
       value: 

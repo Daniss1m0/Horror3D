@@ -31,15 +31,6 @@ public class EnemyAI : MonoBehaviour
 
     void Start()
     {
-        if (animator == null)
-        {
-            Debug.LogError("❌ Animator не присвоен!");
-        }
-        else
-        {
-            Debug.Log("✅ Animator найден!");
-        }
-
         walking = true;
         currentDest = destinations[Random.Range(0, destinations.Count)];
     }
@@ -186,8 +177,6 @@ public class EnemyAI : MonoBehaviour
 
         bool walkState = isWalking && !isChasing;
         bool runState = isChasing;
-
-        Debug.Log($"[Anim] Set isWalk: {walkState}, isRun: {runState}");
 
         animator.SetBool("isWalk", walkState);
         animator.SetBool("isRun", runState);
