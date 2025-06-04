@@ -8,33 +8,39 @@ public class EnemyAI : MonoBehaviour
 {
     public NavMeshAgent ai;
     public List<Transform> destinations;
-    public float walkSpeed, chaseSpeed, minIdleTime, maxIdleTime, idleTime,
-        detectionDistance, catchDistance, searchDistance,
-        minChaseTime, maxChaseTime, minSearchTime, maxSearchTime, jumpscareTime;
+    public float walkSpeed, chaseSpeed;
+    public float minIdleTime, maxIdleTime;
+    public float detectionDistance, catchDistance, searchDistance;
+    public float minChaseTime, maxChaseTime;
+    public float minSearchTime, maxSearchTime;
+    public float jumpscareTime;
 
     public bool walking, chasing, searching;
     public Transform player;
-    Transform currentDest;
-    Vector3 dest;
     public Vector3 rayCastOffset;
     public string deathScene;
     public float aiDistance;
 
     private bool isPlayerHidden = false;
     private bool isIdling = false;
-    private bool initialIdleSkipped = false;
+
+    private Transform currentDest;
+    private Vector3 dest;
+
+    private Coroutine idleCoroutine;
+    private Coroutine searchCoroutine;
+    private Coroutine chaseCoroutine;
 
     public Animator animator;
-
-    // Do porównywania zmiany stanów animacji
-    private bool prevIsWalking, prevIsChasing;
 
     void Start()
     {
         walking = true;
-        currentDest = destinations[Random.Range(0, destinations.Count)];
-    }
+        chasing = false;
+        searching = false;
 
+        ChooseNextDestination();
+    }
 
     void Update()
     {
@@ -42,119 +48,152 @@ public class EnemyAI : MonoBehaviour
 
         if (!isPlayerHidden)
         {
-            Vector3 direction = (player.position - transform.position).normalized;
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position + rayCastOffset, direction, out hit, detectionDistance))
+            TryDetectPlayer();
+        }
+
+        if (searching)
+        {
+            ai.speed = 0;
+
+            if (aiDistance <= searchDistance)
             {
-                if (hit.collider.CompareTag("Player"))
-                {
-                    walking = false;
-                    StopAllCoroutines();
-                    StartCoroutine(searchRoutine());
-                    searching = true;
-                    isIdling = false;
-                }
+                CancelCoroutines();
+                chaseCoroutine = StartCoroutine(ChaseRoutine());
+                chasing = true;
+                searching = false;
+                isIdling = false;
+            }
+        }
+
+        if (chasing)
+        {
+            ai.destination = player.position;
+            ai.speed = chaseSpeed;
+
+            if (aiDistance <= catchDistance)
+            {
+                player.gameObject.SetActive(false);
+                StartCoroutine(DeathRoutine());
+                chasing = false;
+                isIdling = false;
             }
 
-            if (searching)
-            {
-                ai.speed = 0;
-
-                if (aiDistance <= searchDistance)
-                {
-                    StopAllCoroutines();
-                    StartCoroutine(chaseRoutine());
-                    chasing = true;
-                    searching = false;
-                    isIdling = false;
-                }
-            }
-
-            if (chasing)
-            {
-                dest = player.position;
-                ai.destination = dest;
-                ai.speed = chaseSpeed;
-
-                if (aiDistance <= catchDistance)
-                {
-                    player.gameObject.SetActive(false);
-                    StartCoroutine(deathRoutine());
-                    chasing = false;
-                    isIdling = false;
-                }
-
-                SetAnimStates(false, true);
-                return;
-            }
+            SetAnimStates(false, true);
+            return;
         }
 
         if (walking)
         {
-            dest = currentDest.position;
-            ai.destination = dest;
+            ai.destination = currentDest.position;
             ai.speed = walkSpeed;
 
-            if (ai.remainingDistance <= ai.stoppingDistance && !isIdling && !ai.pathPending)
+            if (!ai.pathPending && ai.remainingDistance <= ai.stoppingDistance && !isIdling)
             {
-                ai.speed = 0;
-                isIdling = true;
-
-                if (!initialIdleSkipped)
-                {
-                    initialIdleSkipped = true;
-                    walking = true;
-                    isIdling = false;
-                    currentDest = destinations[Random.Range(0, destinations.Count)];
-                }
-                else
-                {
-                    StartCoroutine(stayIdle());
-                    walking = false;
-                }
+                StartIdling();
             }
         }
 
-        // Aktualizacja Animatora
         SetAnimStates(walking, chasing);
     }
 
-    public void stopChase()
+    private void TryDetectPlayer()
     {
-        walking = true;
-        chasing = false;
-        StopCoroutine("chaseRoutine");
-        currentDest = destinations[Random.Range(0, destinations.Count)];
+        Vector3 direction = (player.position - transform.position).normalized;
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position + rayCastOffset, direction, out hit, detectionDistance))
+        {
+            if (hit.collider.CompareTag("Player"))
+            {
+                CancelCoroutines();
+
+                walking = false;
+                searching = true;
+                isIdling = false;
+
+                searchCoroutine = StartCoroutine(SearchRoutine());
+            }
+        }
     }
 
-    IEnumerator stayIdle()
+    private void StartIdling()
     {
-        idleTime = Random.Range(minIdleTime, maxIdleTime);
+        isIdling = true;
+        walking = false;
+        ai.speed = 0;
+
+        idleCoroutine = StartCoroutine(IdleRoutine());
+    }
+
+    private IEnumerator IdleRoutine()
+    {
+        float idleTime = Random.Range(minIdleTime, maxIdleTime);
         yield return new WaitForSeconds(idleTime);
-        walking = true;
+
         isIdling = false;
-        currentDest = destinations[Random.Range(0, destinations.Count)];
+        walking = true;
+        ChooseNextDestination();
     }
 
-    IEnumerator searchRoutine()
+    private IEnumerator SearchRoutine()
     {
-        yield return new WaitForSeconds(Random.Range(minSearchTime, maxSearchTime));
+        float searchTime = Random.Range(minSearchTime, maxSearchTime);
+        yield return new WaitForSeconds(searchTime);
+
         searching = false;
         walking = true;
         isIdling = false;
-        currentDest = destinations[Random.Range(0, destinations.Count)];
+        ChooseNextDestination();
     }
 
-    IEnumerator chaseRoutine()
+    private IEnumerator ChaseRoutine()
     {
-        yield return new WaitForSeconds(Random.Range(minChaseTime, maxChaseTime));
-        stopChase();
+        float chaseTime = Random.Range(minChaseTime, maxChaseTime);
+        yield return new WaitForSeconds(chaseTime);
+
+        StopChase();
     }
 
-    IEnumerator deathRoutine()
+    private IEnumerator DeathRoutine()
     {
         yield return new WaitForSeconds(jumpscareTime);
         SceneManager.LoadScene(deathScene);
+    }
+
+    public void StopChase()
+    {
+        if (chaseCoroutine != null)
+        {
+            StopCoroutine(chaseCoroutine);
+            chaseCoroutine = null;
+        }
+
+        chasing = false;
+        walking = true;
+        ChooseNextDestination();
+    }
+
+    private void CancelCoroutines()
+    {
+        if (idleCoroutine != null)
+        {
+            StopCoroutine(idleCoroutine);
+            idleCoroutine = null;
+        }
+
+        if (searchCoroutine != null)
+        {
+            StopCoroutine(searchCoroutine);
+            searchCoroutine = null;
+        }
+
+        if (chaseCoroutine != null)
+        {
+            StopCoroutine(chaseCoroutine);
+            chaseCoroutine = null;
+        }
+
+        isIdling = false;
     }
 
     public void SetPlayerHidden(bool hidden)
@@ -163,25 +202,23 @@ public class EnemyAI : MonoBehaviour
 
         if (hidden && chasing)
         {
-            StopCoroutine("chaseRoutine");
-            chasing = false;
-            walking = true;
+            StopChase();
+        }
+    }
+
+    private void ChooseNextDestination()
+    {
+        if (destinations.Count > 0)
+        {
             currentDest = destinations[Random.Range(0, destinations.Count)];
         }
     }
 
-    // ✅ Animacja tylko gdy wartość się zmienia
     private void SetAnimStates(bool isWalking, bool isChasing)
     {
         if (animator == null) return;
 
-        bool walkState = isWalking && !isChasing;
-        bool runState = isChasing;
-
-        animator.SetBool("isWalk", walkState);
-        animator.SetBool("isRun", runState);
+        animator.SetBool("isWalk", isWalking && !isChasing);
+        animator.SetBool("isRun", isChasing);
     }
-
-
-
 }
