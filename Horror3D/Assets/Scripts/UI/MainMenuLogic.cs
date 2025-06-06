@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class MainMenuLogic : MonoBehaviour
 {
@@ -31,7 +31,11 @@ public class MainMenuLogic : MonoBehaviour
     };
 
     private int currentLine = 0;
+    private string fullLoreText = "";
     private bool isShowingLore = false;
+
+    private float loreDelay = 0.2f;
+    private float lastInputTime;
 
     void Start()
     {
@@ -56,30 +60,60 @@ public class MainMenuLogic : MonoBehaviour
         mainMenu.GetComponent<Canvas>().enabled = false;
         loreCanvas.GetComponent<Canvas>().enabled = true;
 
-        isShowingLore = true;
+        // Сброс фокуса с UI
+        EventSystem.current.SetSelectedGameObject(null);
+
         currentLine = 0;
-        loreText.text = loreLines[currentLine];
+        fullLoreText = "";
+        loreText.text = "";
+        isShowingLore = true;
+        lastInputTime = Time.time;
+
+        ShowNextLine();
     }
 
     void Update()
     {
-        if (isShowingLore && Input.GetKeyDown(KeyCode.Return))
+        if (!isShowingLore) return;
+
+        // Отладка: проверим, нажата ли вообще клавиша
+        if (Input.anyKeyDown)
         {
+            Debug.Log("Key pressed while lore is showing");
+        }
+
+        // Проверка, что фокус не на UI элементе
+        bool inputNotBlockedByUI = EventSystem.current.currentSelectedGameObject == null;
+
+        if (inputNotBlockedByUI &&
+            Time.time - lastInputTime > loreDelay &&
+            Input.GetKeyDown(KeyCode.Return))
+        {
+            Debug.Log("Return pressed and input is not blocked by UI");
+
+            lastInputTime = Time.time;
             currentLine++;
+
             if (currentLine < loreLines.Length)
             {
-                loreText.text = loreLines[currentLine];
+                ShowNextLine();
             }
             else
             {
+                isShowingLore = false;
                 StartCoroutine(LoadNextScene());
             }
         }
     }
 
+    void ShowNextLine()
+    {
+        fullLoreText += loreLines[currentLine] + "\n";
+        loreText.text = fullLoreText;
+    }
+
     IEnumerator LoadNextScene()
     {
-        isShowingLore = false;
         yield return new WaitForSeconds(1f);
         SceneManager.LoadScene(nextSceneName);
     }
