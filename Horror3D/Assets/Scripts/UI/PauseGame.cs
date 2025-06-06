@@ -36,15 +36,4 @@ public class PauseGame : MonoBehaviour
             on = false;
         }
     }
-
-    public void GoToMainMenu()
-    {
-        Time.timeScale = 1;
-        SceneManager.LoadScene("MainMenu");
-    }
-
-    public void Exit()
-    {
-        Application.Quit();
-    }
 }
