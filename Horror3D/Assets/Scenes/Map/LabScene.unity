@@ -8614,9 +8614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92e8b1f4f0524f44eba0963d1051f814, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  quests:
-  - {fileID: 0}
-  - {fileID: 0}
+  quests: []
   tmpText: {fileID: 81162020}
 --- !u!114 &453281664
 MonoBehaviour:
@@ -22327,7 +22325,7 @@ PrefabInstance:
     - target: {fileID: 1788591076674000145, guid: 10715e9f5bc47f54eab6f080f6cbd8e3, type: 3}
       propertyPath: player
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 453281656}
     - target: {fileID: 1788591076674000145, guid: 10715e9f5bc47f54eab6f080f6cbd8e3, type: 3}
       propertyPath: hideText
       value: 
