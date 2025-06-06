@@ -10,7 +10,7 @@ public class MainMenuLogic : MonoBehaviour
     private GameObject mainMenu;
     private GameObject optionsMenu;
     private GameObject extrasMenu;
-    private GameObject loading;
+    private GameObject loreCanvas;
 
     public AudioSource buttonSound;
 
@@ -19,17 +19,31 @@ public class MainMenuLogic : MonoBehaviour
     public TMP_Dropdown qualityDropdown;
     public AudioSource masterAudioSource;
 
+    public TextMeshProUGUI loreText;
+    public string nextSceneName = "SuburbScene";
+
+    private string[] loreLines = new string[]
+    {
+        "Я проснулся посреди ночи. Было странное чувство тревоги...",
+        "Весь дом казался пустым, но что-то было не так.",
+        "Я слышал шорох за дверью...",
+        "Нужно было выяснить, что происходит."
+    };
+
+    private int currentLine = 0;
+    private bool isShowingLore = false;
+
     void Start()
     {
         mainMenu = GameObject.Find("MainMenuCanvas");
         optionsMenu = GameObject.Find("OptionsCanvas");
         extrasMenu = GameObject.Find("ExtrasCanvas");
-        loading = GameObject.Find("LoadingCanvas");
+        loreCanvas = GameObject.Find("LoreCanvas");
 
         mainMenu.GetComponent<Canvas>().enabled = true;
         optionsMenu.GetComponent<Canvas>().enabled = false;
         extrasMenu.GetComponent<Canvas>().enabled = false;
-        loading.GetComponent<Canvas>().enabled = false;
+        loreCanvas.GetComponent<Canvas>().enabled = false;
 
         InitVolume();
         InitFullscreen();
@@ -38,11 +52,36 @@ public class MainMenuLogic : MonoBehaviour
 
     public void StartButton()
     {
-        Debug.Log("Start");
-        loading.GetComponent<Canvas>().enabled = true;
-        mainMenu.GetComponent<Canvas>().enabled = false;
         buttonSound.Play();
-        SceneManager.LoadScene("SuburbScene");
+        mainMenu.GetComponent<Canvas>().enabled = false;
+        loreCanvas.GetComponent<Canvas>().enabled = true;
+
+        isShowingLore = true;
+        currentLine = 0;
+        loreText.text = loreLines[currentLine];
+    }
+
+    void Update()
+    {
+        if (isShowingLore && Input.GetKeyDown(KeyCode.Return))
+        {
+            currentLine++;
+            if (currentLine < loreLines.Length)
+            {
+                loreText.text = loreLines[currentLine];
+            }
+            else
+            {
+                StartCoroutine(LoadNextScene());
+            }
+        }
+    }
+
+    IEnumerator LoadNextScene()
+    {
+        isShowingLore = false;
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(nextSceneName);
     }
 
     public void OptionsButton()
@@ -113,10 +152,5 @@ public class MainMenuLogic : MonoBehaviour
             QualitySettings.SetQualityLevel(level);
             PlayerPrefs.SetInt("Quality", level);
         });
-    }
-
-    void Update()
-    {
-
     }
 }
