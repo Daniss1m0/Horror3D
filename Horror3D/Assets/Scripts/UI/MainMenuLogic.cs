@@ -24,10 +24,10 @@ public class MainMenuLogic : MonoBehaviour
 
     private string[] loreLines = new string[]
     {
-        "Я проснулся посреди ночи. Было странное чувство тревоги...",
-        "Весь дом казался пустым, но что-то было не так.",
-        "Я слышал шорох за дверью...",
-        "Нужно было выяснить, что происходит."
+        "Bla",
+        "Bla bla!",
+        "Bla bla bla bla bla",
+        "bla..."
     };
 
     private int currentLine = 0;
@@ -60,7 +60,6 @@ public class MainMenuLogic : MonoBehaviour
         mainMenu.GetComponent<Canvas>().enabled = false;
         loreCanvas.GetComponent<Canvas>().enabled = true;
 
-        // Сброс фокуса с UI
         EventSystem.current.SetSelectedGameObject(null);
 
         currentLine = 0;
@@ -76,21 +75,12 @@ public class MainMenuLogic : MonoBehaviour
     {
         if (!isShowingLore) return;
 
-        // Отладка: проверим, нажата ли вообще клавиша
-        if (Input.anyKeyDown)
-        {
-            Debug.Log("Key pressed while lore is showing");
-        }
-
-        // Проверка, что фокус не на UI элементе
         bool inputNotBlockedByUI = EventSystem.current.currentSelectedGameObject == null;
 
         if (inputNotBlockedByUI &&
             Time.time - lastInputTime > loreDelay &&
-            Input.GetKeyDown(KeyCode.Return))
+            Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Return pressed and input is not blocked by UI");
-
             lastInputTime = Time.time;
             currentLine++;
 
