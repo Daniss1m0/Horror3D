@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class ChangeLine : MonoBehaviour
 {
-    public TMP_Text textComponent;
-    public List<string> newText;
+    public TMP_Text Line;
+    public TMP_Text Person;
+    public List<string> NextLine;
+    public List<string> NextPerson;
 
     private int counter = 0;
 
     public void ChangeText()
     {
-        if (textComponent != null)
+        if (Line != null)
         {
-            textComponent.text = newText[counter];
+            Line.text = NextLine[counter];
+            Person.text = NextPerson[counter];
             counter++;
         }
     }
