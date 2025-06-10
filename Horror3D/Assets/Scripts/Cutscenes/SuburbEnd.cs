@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class CutsceneManager : MonoBehaviour
 {
@@ -177,6 +178,10 @@ public class CutsceneManager : MonoBehaviour
         yield return StartCoroutine(ReturnCameraToOriginal());
 
         timeSkipText.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(5f);
+
+        SceneManager.LoadScene("LabScene");
     }
 
     IEnumerator FadeToBlack()
