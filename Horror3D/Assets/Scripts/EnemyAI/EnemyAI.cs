@@ -187,32 +187,10 @@ public class EnemyAI : MonoBehaviour
         ai.speed = 0;
         CancelCoroutines();
 
-        if (jumpscareCamera != null)
-        {
-            yield return StartCoroutine(JumpscareCameraEffect());
-        }
+
 
         yield return new WaitForSeconds(jumpscareTime);
         SceneManager.LoadScene(deathScene);
-    }
-
-    private IEnumerator JumpscareCameraEffect()
-    {
-        jumpscareCamera.gameObject.SetActive(true);
-        float originalFOV = jumpscareCamera.fieldOfView;
-
-        float duration = 1.0f;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            float t = elapsed / duration;
-            jumpscareCamera.fieldOfView = Mathf.Lerp(originalFOV, cameraZoomFOV, t);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        jumpscareCamera.fieldOfView = cameraZoomFOV;
     }
 
     public void StopChase()
