@@ -187,8 +187,6 @@ public class EnemyAI : MonoBehaviour
         ai.speed = 0;
         CancelCoroutines();
 
-
-
         yield return new WaitForSeconds(jumpscareTime);
         SceneManager.LoadScene(deathScene);
     }
