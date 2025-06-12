@@ -21,17 +21,25 @@ public class EnemyAI : MonoBehaviour
     public string deathScene;
     public float aiDistance;
 
+    public Animator animator;
+
+    public AudioSource walkAudio;
+    public AudioSource runAudio;
+    public AudioSource breathingAudio;
+    public AudioSource jumpscareAudio;
+
+    public Camera jumpscareCamera;
+    public float cameraMoveSpeed = 3f;
+    public float cameraZoomFOV = 30f;
+
     private bool isPlayerHidden = false;
     private bool isIdling = false;
 
     private Transform currentDest;
-    private Vector3 dest;
 
     private Coroutine idleCoroutine;
     private Coroutine searchCoroutine;
     private Coroutine chaseCoroutine;
-
-    public Animator animator;
 
     void Start()
     {
@@ -40,6 +48,11 @@ public class EnemyAI : MonoBehaviour
         searching = false;
 
         ChooseNextDestination();
+
+        if (jumpscareCamera != null)
+            jumpscareCamera.gameObject.SetActive(false);
+        else
+            Debug.LogWarning("jumpscareCamera не привязана в инспекторе!");
     }
 
     void Update()
@@ -54,7 +67,6 @@ public class EnemyAI : MonoBehaviour
         if (searching)
         {
             ai.speed = 0;
-
             if (aiDistance <= searchDistance)
             {
                 CancelCoroutines();
@@ -70,8 +82,11 @@ public class EnemyAI : MonoBehaviour
             ai.destination = player.position;
             ai.speed = chaseSpeed;
 
+            PlayRunSound();
+
             if (aiDistance <= catchDistance)
             {
+                Debug.Log("Игрок пойман — запускаем скример!");
                 player.gameObject.SetActive(false);
                 StartCoroutine(DeathRoutine());
                 chasing = false;
@@ -87,10 +102,16 @@ public class EnemyAI : MonoBehaviour
             ai.destination = currentDest.position;
             ai.speed = walkSpeed;
 
+            PlayWalkSound();
+
             if (!ai.pathPending && ai.remainingDistance <= ai.stoppingDistance && !isIdling)
             {
                 StartIdling();
             }
+        }
+        else
+        {
+            StopWalkSound();
         }
 
         SetAnimStates(walking, chasing);
@@ -105,6 +126,7 @@ public class EnemyAI : MonoBehaviour
         {
             if (hit.collider.CompareTag("Player"))
             {
+                Debug.Log("Игрок замечен!");
                 CancelCoroutines();
 
                 walking = false;
@@ -121,6 +143,9 @@ public class EnemyAI : MonoBehaviour
         isIdling = true;
         walking = false;
         ai.speed = 0;
+
+        StopWalkSound();
+        StopRunSound();
 
         idleCoroutine = StartCoroutine(IdleRoutine());
     }
@@ -156,8 +181,38 @@ public class EnemyAI : MonoBehaviour
 
     private IEnumerator DeathRoutine()
     {
+        if (jumpscareAudio != null)
+            jumpscareAudio.Play();
+
+        ai.speed = 0;
+        CancelCoroutines();
+
+        if (jumpscareCamera != null)
+        {
+            yield return StartCoroutine(JumpscareCameraEffect());
+        }
+
         yield return new WaitForSeconds(jumpscareTime);
         SceneManager.LoadScene(deathScene);
+    }
+
+    private IEnumerator JumpscareCameraEffect()
+    {
+        jumpscareCamera.gameObject.SetActive(true);
+        float originalFOV = jumpscareCamera.fieldOfView;
+
+        float duration = 1.0f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            jumpscareCamera.fieldOfView = Mathf.Lerp(originalFOV, cameraZoomFOV, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        jumpscareCamera.fieldOfView = cameraZoomFOV;
     }
 
     public void StopChase()
@@ -168,6 +223,7 @@ public class EnemyAI : MonoBehaviour
             chaseCoroutine = null;
         }
 
+        StopRunSound();
         chasing = false;
         walking = true;
         ChooseNextDestination();
@@ -175,24 +231,9 @@ public class EnemyAI : MonoBehaviour
 
     private void CancelCoroutines()
     {
-        if (idleCoroutine != null)
-        {
-            StopCoroutine(idleCoroutine);
-            idleCoroutine = null;
-        }
-
-        if (searchCoroutine != null)
-        {
-            StopCoroutine(searchCoroutine);
-            searchCoroutine = null;
-        }
-
-        if (chaseCoroutine != null)
-        {
-            StopCoroutine(chaseCoroutine);
-            chaseCoroutine = null;
-        }
-
+        if (idleCoroutine != null) { StopCoroutine(idleCoroutine); idleCoroutine = null; }
+        if (searchCoroutine != null) { StopCoroutine(searchCoroutine); searchCoroutine = null; }
+        if (chaseCoroutine != null) { StopCoroutine(chaseCoroutine); chaseCoroutine = null; }
         isIdling = false;
     }
 
@@ -217,8 +258,31 @@ public class EnemyAI : MonoBehaviour
     private void SetAnimStates(bool isWalking, bool isChasing)
     {
         if (animator == null) return;
-
         animator.SetBool("isWalk", isWalking && !isChasing);
         animator.SetBool("isRun", isChasing);
+    }
+
+    private void PlayWalkSound()
+    {
+        if (!walkAudio.isPlaying) walkAudio.Play();
+        if (runAudio.isPlaying) runAudio.Stop();
+        if (!breathingAudio.isPlaying) breathingAudio.Play();
+    }
+
+    private void PlayRunSound()
+    {
+        if (!runAudio.isPlaying) runAudio.Play();
+        if (walkAudio.isPlaying) walkAudio.Stop();
+        if (!breathingAudio.isPlaying) breathingAudio.Play();
+    }
+
+    private void StopWalkSound()
+    {
+        if (walkAudio.isPlaying) walkAudio.Stop();
+    }
+
+    private void StopRunSound()
+    {
+        if (runAudio.isPlaying) runAudio.Stop();
     }
 }
