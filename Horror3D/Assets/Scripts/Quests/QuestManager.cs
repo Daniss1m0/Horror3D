@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -11,19 +12,26 @@ public class QuestManager : MonoBehaviour
 
     public TextMeshProUGUI tmpText;
 
-    void Start()
+    public float typingSpeed = 0.05f;
+
+    public void StartQuestRoutine()
     {
         if (quests.Count > 0)
         {
             RegisterQuest(quests[0]);
             quests[0].Activate();
-            tmpText.text = $"{quests[0].text}";
+            StartCoroutine(TypeText(quests[0].text));
         }
     }
 
     private void RegisterQuest(Quest quest)
     {
         quest.OnQuestCompleted += OnQuestCompleted;
+    }
+
+    public void RetypeQuestText()
+    {
+        StartCoroutine(TypeText(quests[currentQuestIndex].text));
     }
 
     private void OnQuestCompleted(Quest completedQuest)
@@ -35,12 +43,21 @@ public class QuestManager : MonoBehaviour
             Quest nextQuest = quests[currentQuestIndex];
             RegisterQuest(nextQuest);
             nextQuest.Activate();
-            tmpText.text = $"{nextQuest.text}";
+            StartCoroutine(TypeText(nextQuest.text));
             Debug.Log($"Activated next quest: {nextQuest.gameObject.name}");
         }
         else
         {
             Debug.Log("All quests completed!");
+        }
+    }
+    private IEnumerator TypeText(string fullText)
+    {
+        tmpText.text = "";
+        foreach (char c in fullText)
+        {
+            tmpText.text += c;
+            yield return new WaitForSeconds(typingSpeed);
         }
     }
 }
