@@ -115,7 +115,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7252070335883642720
 Transform:
   m_ObjectHideFlags: 0
@@ -887,7 +887,7 @@ MonoBehaviour:
   runAudio: {fileID: 7786439785040020673}
   breathingAudio: {fileID: 3828207908279443542}
   jumpscareAudio: {fileID: 3384467179976251528}
-  jumpscareCamera: {fileID: 0}
+  jumpscareCamera: {fileID: 4296794573096029185}
   cameraMoveSpeed: 3
   cameraZoomFOV: 30
 --- !u!195 &3060042530762974475
@@ -1014,7 +1014,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 57c9805c4b1742543b8f57af81e7a4c4, type: 3}
   m_Resource: {fileID: 8300000, guid: 57c9805c4b1742543b8f57af81e7a4c4, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0

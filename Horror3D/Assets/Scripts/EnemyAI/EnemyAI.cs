@@ -51,8 +51,6 @@ public class EnemyAI : MonoBehaviour
 
         if (jumpscareCamera != null)
             jumpscareCamera.gameObject.SetActive(false);
-        else
-            Debug.LogWarning("jumpscareCamera не привязана в инспекторе!");
     }
 
     void Update()
@@ -86,8 +84,13 @@ public class EnemyAI : MonoBehaviour
 
             if (aiDistance <= catchDistance)
             {
-                Debug.Log("Игрок пойман — запускаем скример!");
-                player.gameObject.SetActive(false);
+                if (player.GetComponent<MonoBehaviour>() != null)
+                    player.GetComponent<MonoBehaviour>().enabled = false;
+
+                Camera playerCamera = player.GetComponentInChildren<Camera>();
+                if (playerCamera != null)
+                    playerCamera.gameObject.SetActive(false);
+
                 StartCoroutine(DeathRoutine());
                 chasing = false;
                 isIdling = false;
@@ -126,13 +129,10 @@ public class EnemyAI : MonoBehaviour
         {
             if (hit.collider.CompareTag("Player"))
             {
-                Debug.Log("Игрок замечен!");
                 CancelCoroutines();
-
                 walking = false;
                 searching = true;
                 isIdling = false;
-
                 searchCoroutine = StartCoroutine(SearchRoutine());
             }
         }
@@ -181,13 +181,19 @@ public class EnemyAI : MonoBehaviour
 
     private IEnumerator DeathRoutine()
     {
-        if (jumpscareAudio != null)
-            jumpscareAudio.Play();
+        if (jumpscareAudio != null && jumpscareAudio.clip != null)
+        {
+            jumpscareAudio.PlayOneShot(jumpscareAudio.clip, jumpscareAudio.volume);
+        }
+
+        if (jumpscareCamera != null)
+            jumpscareCamera.gameObject.SetActive(true);
 
         ai.speed = 0;
         CancelCoroutines();
 
         yield return new WaitForSeconds(jumpscareTime);
+
         SceneManager.LoadScene(deathScene);
     }
 
