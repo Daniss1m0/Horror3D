@@ -10,7 +10,9 @@ public class TriggerCutsceneWithQuest : MonoBehaviour
     {
         if (triggerQuest.IsComplete)
         {
-            ObjectToActivate.SetActive(true);
+            if(ObjectToActivate != null)
+                ObjectToActivate.SetActive(true);
+
             if (playableDirector.enabled)
             {
                 playableDirector.Play();
