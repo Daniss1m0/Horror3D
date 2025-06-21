@@ -24,10 +24,11 @@ public class MainMenuLogic : MonoBehaviour
 
     private string[] loreLines = new string[]
     {
-        "Bla",
-        "Bla bla!",
-        "Bla bla bla bla bla",
-        "bla..."
+        "Nie wiem, kiedy wszystko się posypało.",
+        "Może wtedy, gdy przestałem wychodzić ze swojego pokoju.",
+        "Może wtedy, gdy mama przestała mówić ‘dobranoc’.",
+        "Czasem zastanawiam się, czy to już się wydarzyło…",
+        "…czy dopiero się zaczyna."
     };
 
     private int currentLine = 0;
