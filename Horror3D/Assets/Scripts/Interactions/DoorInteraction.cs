@@ -4,12 +4,11 @@ using UnityEngine.ProBuilder.Shapes;
 public class DoorInteraction : MonoBehaviour, IInteractable
 {
     public Animator door;
-    public GameObject openText;
     public Inventory inventory;
     public ItemBaseClass itemToCheckFor;
     private bool keyUsed = false;
 
-    public AudioSource doorSound;
+    //public AudioSource doorSound;
 
     public void Interact()
     {
@@ -22,9 +21,8 @@ public class DoorInteraction : MonoBehaviour, IInteractable
         if (keyUsed)
         {
             Debug.Log("It Opens");
-            door.SetBool("Open", true);
-            door.SetBool("Closed", false);
-            doorSound?.Play();
+            door.SetBool("Opened", true);
+            //doorSound?.Play();
         }
         else
         {
@@ -35,20 +33,17 @@ public class DoorInteraction : MonoBehaviour, IInteractable
     void DoorCloses()
     {
         Debug.Log("It Closes");
-        door.SetBool("Open", false);
-        door.SetBool("Closed", true);
+        door.SetBool("Opened", false);
     }
 
     void DoorAction()
     {
-        if (door.GetBool("Open"))
-        {
-            DoorCloses();
-        }
-        else
-        {
-            DoorOpens();
-        }
+        if(door != null){
+            if (door.GetBool("Opened"))
+                DoorCloses();
+            else
+                DoorOpens();
+        }  
     }
 
     void CheckKey()
