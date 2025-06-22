@@ -2975,7 +2975,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 123, y: -67}
+  m_AnchoredPosition: {x: 123, y: -37.5}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &146696256
@@ -11177,7 +11177,6 @@ RectTransform:
   - {fileID: 1506698601}
   - {fileID: 1677493982}
   - {fileID: 558020319}
-  - {fileID: 1608716500}
   - {fileID: 146696255}
   - {fileID: 867986531}
   - {fileID: 973665950}
@@ -13039,11 +13038,12 @@ RectTransform:
   - {fileID: 857429191}
   - {fileID: 1040563788}
   - {fileID: 439426885}
+  - {fileID: 1608716500}
   m_Father: {fileID: 512056682}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -24}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 90, y: 25}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &558020320
@@ -13561,7 +13561,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0ab8c97d76ea07a41b4f5c138be4699b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.19
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0ab8c97d76ea07a41b4f5c138be4699b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -57487,6 +57487,7 @@ MonoBehaviour:
   FlashLight: {fileID: 11400000, guid: 549a74600f10b4147b45cdd4b837ff63, type: 2}
   left: {fileID: 840334301}
   right: {fileID: 1314319324}
+  chargeSliderUI: {fileID: 558020318}
   spotlight: {fileID: 1285050592}
   maxBattery: 100
   drainPower: 1
@@ -57871,7 +57872,7 @@ GameObject:
   - component: {fileID: 1608716502}
   - component: {fileID: 1608716501}
   m_Layer: 0
-  m_Name: Charge
+  m_Name: ChargeTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57886,14 +57887,14 @@ RectTransform:
   m_GameObject: {fileID: 1608716499}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 512056682}
+  m_Father: {fileID: 558020319}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 123, y: -42}
+  m_AnchoredPosition: {x: 102.99999, y: -19.000002}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1608716501

@@ -7,6 +7,7 @@ public class FlashlightUsecase : MonoBehaviour
     [SerializeField] private ItemBaseClass FlashLight;
     [SerializeField] private Light left;
     [SerializeField] private Light right;
+    [SerializeField] private GameObject chargeSliderUI;
 
     public Light spotlight;
     public float maxBattery = 100f;
@@ -18,6 +19,7 @@ public class FlashlightUsecase : MonoBehaviour
     private void Start()
     {
         spotlight.enabled = false;
+        chargeSliderUI.SetActive(false);
         currentBattery = Mathf.Clamp(currentBattery, 0f, maxBattery);
     }
 
@@ -28,6 +30,7 @@ public class FlashlightUsecase : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.F))
             {
                 ToggleFlashlight();
+
                 if (inventoryToCheck.GetItemIndex(FlashLight) == 0)
                 {
                     left.enabled = !left.enabled;
@@ -57,6 +60,7 @@ public class FlashlightUsecase : MonoBehaviour
         else if (currentBattery > 0f)
         {
             spotlight.enabled = true;
+            chargeSliderUI.SetActive(true);
             drainRoutine = StartCoroutine(DrainBattery());
         }
     }
@@ -64,6 +68,7 @@ public class FlashlightUsecase : MonoBehaviour
     void DisableFlashlight()
     {
         spotlight.enabled = false;
+        chargeSliderUI.SetActive(false);
         if (drainRoutine != null)
         {
             StopCoroutine(drainRoutine);
@@ -86,3 +91,4 @@ public class FlashlightUsecase : MonoBehaviour
         }
     }
 }
+
