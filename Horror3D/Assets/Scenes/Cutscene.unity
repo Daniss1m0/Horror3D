@@ -11547,7 +11547,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "10 lat p\xF3\u017Aniej\n"
+  m_text: '10 years later
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -11574,7 +11576,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 67.7
+  m_fontSize: 66
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -33557,13 +33559,12 @@ MonoBehaviour:
   cameraMoveDuration: 1
   otherCameraScript: {fileID: 686685133}
   lines:
-  - speaker: Mama
-    line: "Synu Jedziemy w lepsze miejsce, tam nie b\u0119da trapi\u0107 nas ju\u017C
-      \u017Cadne problemy"
-  - speaker: Syn
-    line: "Wyprowadzamy si\u0119?"
-  - speaker: Mama
-    line: Zobaczysz, wsiadaj bo nie mamy czasu
+  - speaker: Mom
+    line: Son, we're going to a better place, no problems will trouble us anymore
+  - speaker: Son
+    line: Are we moving?
+  - speaker: Mom
+    line: "You\u2019ll see. Get in, we don\u2019t have time."
 --- !u!4 &1110885268 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fd7931903fa4add48b64eda5ad7aa27d, type: 3}
