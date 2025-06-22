@@ -40,7 +40,7 @@ public class KeyboardInteract : MonoBehaviour
 
         if (enteredCode.Length == 4)
         {
-            Invoke(nameof(CheckCode), 0.2f); // немного подождать, чтобы UI обновился
+            Invoke(nameof(CheckCode), 0.2f);
         }
     }
 
@@ -90,10 +90,9 @@ public class KeyboardInteract : MonoBehaviour
 
     void OpenDoor()
     {
-        // Здесь можешь добавить анимацию, открыть дверь или сделать её неактивной
         if (door != null)
         {
-            door.SetActive(false); // простой способ "открыть"
+            door.SetActive(false);
         }
     }
 }

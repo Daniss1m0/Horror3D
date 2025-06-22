@@ -18,8 +18,12 @@ public class FlashlightUsecase : MonoBehaviour
 
     private void Start()
     {
-        spotlight.enabled = false;
-        chargeSliderUI.SetActive(false);
+        if (spotlight != null)
+            spotlight.enabled = false;
+
+        if (chargeSliderUI != null)
+            chargeSliderUI.SetActive(false);
+
         currentBattery = Mathf.Clamp(currentBattery, 0f, maxBattery);
     }
 
@@ -33,19 +37,25 @@ public class FlashlightUsecase : MonoBehaviour
 
                 if (inventoryToCheck.GetItemIndex(FlashLight) == 0)
                 {
-                    left.enabled = !left.enabled;
+                    if (left != null)
+                        left.enabled = !left.enabled;
                 }
                 else
                 {
-                    right.enabled = !left.enabled;
+                    if (right != null)
+                        right.enabled = !left.enabled;
                 }
             }
         }
         else
         {
             DisableFlashlight();
-            left.enabled = false;
-            right.enabled = false;
+
+            if (left != null)
+                left.enabled = false;
+
+            if (right != null)
+                right.enabled = false;
         }
 
         currentBattery = Mathf.Clamp(currentBattery, 0f, maxBattery);
@@ -53,6 +63,9 @@ public class FlashlightUsecase : MonoBehaviour
 
     void ToggleFlashlight()
     {
+        if (spotlight == null)
+            return;
+
         if (spotlight.enabled)
         {
             DisableFlashlight();
@@ -60,15 +73,22 @@ public class FlashlightUsecase : MonoBehaviour
         else if (currentBattery > 0f)
         {
             spotlight.enabled = true;
-            chargeSliderUI.SetActive(true);
+
+            if (chargeSliderUI != null)
+                chargeSliderUI.SetActive(true);
+
             drainRoutine = StartCoroutine(DrainBattery());
         }
     }
 
     void DisableFlashlight()
     {
-        spotlight.enabled = false;
-        chargeSliderUI.SetActive(false);
+        if (spotlight != null)
+            spotlight.enabled = false;
+
+        if (chargeSliderUI != null)
+            chargeSliderUI.SetActive(false);
+
         if (drainRoutine != null)
         {
             StopCoroutine(drainRoutine);
@@ -91,4 +111,3 @@ public class FlashlightUsecase : MonoBehaviour
         }
     }
 }
-
