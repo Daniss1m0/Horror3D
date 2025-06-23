@@ -14,13 +14,16 @@ public class QuestManager : MonoBehaviour
 
     public float typingSpeed = 0.05f;
 
+    private bool questRoutineStarted { get; set; } = false;
+
     public void StartQuestRoutine()
     {
-        if (quests.Count > 0)
+        if (quests.Count > 0 && questRoutineStarted == false)
         {
             RegisterQuest(quests[0]);
             quests[0].Activate();
             StartCoroutine(TypeText(quests[0].text));
+            questRoutineStarted = true;
         }
     }
 
@@ -59,5 +62,10 @@ public class QuestManager : MonoBehaviour
             tmpText.text += c;
             yield return new WaitForSeconds(typingSpeed);
         }
+    }
+
+    public bool GetStartedQuestRoutine()
+    {
+        return questRoutineStarted;
     }
 }
