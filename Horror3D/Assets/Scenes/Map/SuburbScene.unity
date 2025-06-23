@@ -19721,7 +19721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98853830e5ba1b54c9475277ad624c12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: "Znale\u015B\u0107 matk\u0119"
+  text: Find mother
 --- !u!114 &837636216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21406,7 +21406,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44a3d44e96603554c9df13f4f3d32ea1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: "Wynie\u015B\u0107 \u015Bmieci do w\xF3zka"
+  text: Take the trash out to the cart
   inventoryToCheck: {fileID: 11400000, guid: fe366502409c67941b72daac5620d15e, type: 2}
   itemToSearchFor: {fileID: 11400000, guid: dc20a9f0fc189c3479bca72b568aabd3, type: 2}
 --- !u!1001 &905531322
@@ -27957,14 +27957,13 @@ MonoBehaviour:
   Line: {fileID: 641002997}
   Person: {fileID: 1667922058}
   NextLine:
-  - "Czemu jeszcze jeste\u015B przy komputerze?!"
-  - "Wyl\u0105czaj, szybko!"
-  - "Je\u015Bli ci si\u0119 nie \u015Bpi, to chocia\u017C wynie\u015B te \u015Bmieci
-    w kuchni..."
+  - Why are you still at the computer?!
+  - Turn it off, quickly!
+  - "If you\u2019re not sleepy, then at least take out the trash in the kitchen...  "
   NextPerson:
-  - Mama
-  - Mama
-  - Mama
+  - Mother
+  - Mother
+  - Mother
   director: {fileID: 682383624}
 --- !u!114 &973665947
 MonoBehaviour:
@@ -57690,6 +57689,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63884daae14e4684589aeb705cd8be3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  QuestManager: {fileID: 0}
   newSkyboxMaterial: {fileID: 2100000, guid: 1cc6e6796f833a94f94e6d794ca654c3, type: 2}
   DirLight: {fileID: 410087039}
 --- !u!4 &1602002611 stripped
@@ -58565,7 +58565,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98853830e5ba1b54c9475277ad624c12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: "Powr\xF3t do \u0142\xF3\u017Cka"
+  text: Back to bed
 --- !u!1001 &1640347359
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -70371,7 +70371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98853830e5ba1b54c9475277ad624c12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: "Trzeba wyl\u0105czy\u0107 komputer"
+  text: Turn off your computer
 --- !u!65 &3469287838158542753
 BoxCollider:
   m_ObjectHideFlags: 0

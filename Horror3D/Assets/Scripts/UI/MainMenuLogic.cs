@@ -24,11 +24,11 @@ public class MainMenuLogic : MonoBehaviour
 
     private string[] loreLines = new string[]
     {
-        "Nie wiem, kiedy wszystko się posypało.",
-        "Może wtedy, gdy przestałem wychodzić ze swojego pokoju.",
-        "Może wtedy, gdy mama przestała mówić ‘dobranoc’.",
-        "Czasem zastanawiam się, czy to już się wydarzyło…",
-        "…czy dopiero się zaczyna."
+        "I don't know when everything fell apart.",
+        "Maybe it was when I stopped leaving my room.",
+        "Maybe it was when Mom stopped saying 'goodnight'.",
+        "Sometimes I wonder if it already happened...",
+        "...or if it's only just beginning."
     };
 
     private int currentLine = 0;

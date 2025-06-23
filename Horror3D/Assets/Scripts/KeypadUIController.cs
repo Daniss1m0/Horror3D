@@ -1,14 +1,18 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.SceneManagement;
 
-public class KeypadUIController : MonoBehaviour
+public class KeypadController : MonoBehaviour
 {
     public GameObject keyboardCanvas;
     public TMP_Text inputText;
+    public Transform player;
+    public float interactionDistance = 3f;
 
     private string currentInput = "";
     private string correctCode = "2142";
+    private bool isPlayerNearby = false;
+    private bool isCanvasOpen = false;
 
     void Start()
     {
@@ -19,16 +23,15 @@ public class KeypadUIController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        float distance = Vector3.Distance(player.position, transform.position);
+        isPlayerNearby = distance <= interactionDistance;
+
+        if (isPlayerNearby && Input.GetKeyDown(KeyCode.E))
         {
-            if (!keyboardCanvas.activeSelf && PlayerLookingAtKeypad())
-            {
-                OpenKeypad();
-            }
-            else if (keyboardCanvas.activeSelf)
-            {
-                ExitKeypad();
-            }
+            if (!isCanvasOpen)
+                OpenCanvas();
+            else
+                CloseCanvas();
         }
     }
 
@@ -58,23 +61,20 @@ public class KeypadUIController : MonoBehaviour
         }
     }
 
-    public void OpenKeypad()
+    void OpenCanvas()
     {
         keyboardCanvas.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        isCanvasOpen = true;
     }
 
-    public void ExitKeypad()
+    void CloseCanvas()
     {
         keyboardCanvas.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        isCanvasOpen = false;
         ClearInput();
-    }
-
-    private bool PlayerLookingAtKeypad()
-    {
-        return true;
     }
 }
