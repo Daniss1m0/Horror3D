@@ -87,8 +87,8 @@ Loading next environment...
         bottomPanel.SetActive(false);
         fullScreenPanel.SetActive(true);
 
-        yield return ScrollEndingText(endCredits);
-
+        endingText.text = endCredits;
+        yield return new WaitForSeconds(15f);
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -101,23 +101,6 @@ Loading next environment...
             yield return new WaitForSeconds(typeSpeed);
         }
         yield return new WaitForSeconds(bottomTextDuration);
-    }
-
-    private IEnumerator ScrollEndingText(string text)
-    {
-        endingText.text = text;
-        endingText.rectTransform.anchoredPosition = endingStartPos;
-
-        float elapsed = 0f;
-        while (elapsed < endingScrollDuration)
-        {
-            float t = elapsed / endingScrollDuration;
-            endingText.rectTransform.anchoredPosition = Vector2.Lerp(endingStartPos, endingEndPos, t);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        endingText.rectTransform.anchoredPosition = endingEndPos;
     }
 
     private IEnumerator FadeFromWhite()
