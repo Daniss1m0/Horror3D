@@ -8,6 +8,11 @@ public class Inventory : ScriptableObject
 {
     [SerializeField] private List<InventorySlot> InventorySpace = new List<InventorySlot>(2);
     private int InventoryMaxSlots = 2;
+
+    public void ResetInventory()
+    {
+        InventorySpace.Clear();
+    }
     public void AddItem(ItemBaseClass item)
     {
         if (HasFreeSpace())

@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83934cd71b614f642bfd9494140fddfc, type: 3}
-  m_Name: LabInventory
+  m_Script: {fileID: 11500000, guid: cf3967ad59bdcc74486fffcdb0b92981, type: 3}
+  m_Name: Key3
   m_EditorClassIdentifier: 
-  InventorySpace:
-  - item: {fileID: 11400000, guid: 66f09d9a2e8bc7848bc3c4bafc057b47, type: 2}
+  id: 8
+  type: 1
+  description: 
+  prefab: {fileID: 7088947284760186756, guid: 837c2d55fe2736c48ba10630726f676d, type: 3}

@@ -27,6 +27,13 @@ public class PlayerInteractor : MonoBehaviour
 
     private void Awake()
     {
+        inventory.ResetInventory();
+        AttachToHands();
+    }
+
+    private void Start()
+    {
+        inventory.ResetInventory();
         AttachToHands();
     }
     void Update()
@@ -49,7 +56,7 @@ public class PlayerInteractor : MonoBehaviour
 
                 Debug.Log("Interacted with: " + target.name);
 
-                if (target.TryGetComponent(out IInteractable interactable))
+                foreach (var interactable in target.GetComponents<IInteractable>())
                 {
                     interactable.Interact();
                 }
