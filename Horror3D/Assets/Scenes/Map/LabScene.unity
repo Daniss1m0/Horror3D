@@ -5675,7 +5675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chargeAmount: 25
-  chargeTarget: {fileID: 0}
+  chargeTarget: {fileID: 1107708619}
 --- !u!54 &257722512
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7238,7 +7238,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chargeAmount: 25
-  chargeTarget: {fileID: 0}
+  chargeTarget: {fileID: 1107708619}
 --- !u!54 &299615123
 Rigidbody:
   m_ObjectHideFlags: 0
